@@ -2,102 +2,389 @@
 
 **Arquitectura · Diseño · Formación**
 
-**Baseline actual después del refactor técnico senior, la fase QA y la optimización de rendimiento. Esta versión se considera Release Candidate hasta validar `build`, `test` y smoke tests en Visual Studio.**
+ATRIUM Academy es una plataforma web de formación orientada al aprendizaje de arquitectura, representación y herramientas digitales.
 
-## Solución
+El sistema permite gestionar cursos, contenidos, pedidos, progreso académico, recursos y certificados desde una arquitectura organizada en capas, con autenticación mediante ASP.NET Core Identity y un panel administrativo independiente.
+
+---
+
+## Estado del proyecto
+
+- ✅ Compilación sin errores.
+- ✅ 83/83 pruebas automatizadas correctas.
+- ✅ SQL Server + Entity Framework Core.
+- ✅ ASP.NET Core Identity.
+- ✅ Roles de estudiante y administrador.
+- ✅ Panel administrativo.
+- ✅ Seguimiento de progreso.
+- ✅ Certificados.
+- ✅ Módulo de contacto con SQL Server + Gmail SMTP.
+- ✅ Diseño responsive.
+- ⏳ Despliegue en Microsoft Azure.
+
+---
+
+## Funcionalidades
+
+### Visitante
+
+- Página de inicio.
+- Información institucional.
+- Catálogo público de cursos.
+- Detalle de cursos.
+- Preguntas frecuentes.
+- Formulario de contacto.
+- Registro e inicio de sesión.
+- Validación pública de certificados.
+
+### Estudiante
+
+- Acceso a cursos adquiridos.
+- Carrito de compras.
+- Gestión de pedidos.
+- Recursos educativos.
+- Seguimiento del progreso.
+- Certificados.
+- Perfil de usuario.
+- Historial de pedidos.
+
+### Administrador
+
+- Dashboard administrativo.
+- Gestión de usuarios.
+- Gestión de categorías.
+- Gestión de cursos.
+- Gestión de módulos.
+- Gestión de contenidos.
+- Gestión de recursos.
+- Gestión de pedidos.
+- Gestión de certificados.
+- Administración de contenido de portada.
+
+---
+
+## Módulo de contacto
+
+ATRIUM incluye un módulo de soporte funcional.
+
+```text
+Formulario
+    ↓
+Validación server-side
+    ↓
+SQL Server
+    ↓
+Consulta almacenada
+    ↓
+Gmail SMTP
+    ↓
+Notificación al correo de ATRIUM
+```
+
+La consulta se almacena primero en SQL Server.
+
+Si Gmail falla temporalmente, la información permanece registrada en la base de datos y no se pierde.
+
+---
+
+## Tecnologías
+
+```text
+ASP.NET Core MVC
+.NET 9
+C#
+Entity Framework Core 9
+SQL Server
+ASP.NET Core Identity
+MailKit
+Gmail SMTP
+MSTest
+Razor Views
+HTML5
+CSS3
+JavaScript
+```
+
+---
+
+## Arquitectura
+
+La solución está organizada en cuatro proyectos principales:
 
 ```text
 ATRIUM-Academy/
+│
+├── ATRIUM.Domain/
+│   ├── Models/
+│   └── Constants/
+│
+├── ATRIUM.Infrastructure/
+│   ├── Context/
+│   ├── Migrations/
+│   └── SeedData/
+│
+├── ATRIUM.Web/
+│   ├── Controllers/
+│   ├── Services/
+│   ├── ViewModels/
+│   ├── Views/
+│   └── wwwroot/
+│
+├── ATRIUM.Tests/
+│
+├── database/
+├── docs/
 ├── ATRIUM.Academy.sln
-├── ATRIUM.Domain/          # Entidades, constantes y validaciones de dominio
-├── ATRIUM.Infrastructure/  # EF Core, Identity store, migraciones y SeedData
-├── ATRIUM.Web/             # MVC, ViewModels, servicios, Razor, CSS/JS
-├── ATRIUM.Tests/           # Suite QA con MSTest
-├── database/               # Migración del nombre histórico de la base
-└── docs/                   # Documentación visual y de roles
+├── .gitignore
+└── README.md
 ```
 
-## Documentación obligatoria antes de trabajar sobre esta versión
+### ATRIUM.Domain
 
-- [`README_AUDITORIA_DEBUGGING.md`](README_AUDITORIA_DEBUGGING.md): problemas encontrados, causa, riesgo y corrección.
-- [`README_CAMBIOS_REFACTOR.md`](README_CAMBIOS_REFACTOR.md): qué cambió, por qué y qué mejoró.
-- [`database/README_DATABASE.md`](database/README_DATABASE.md): transición `VIMOD_Web` → `ATRIUM_Academy` y migración EF correctiva.
-- [`docs/VALIDACION_ESTATICA.md`](docs/VALIDACION_ESTATICA.md): verificaciones estructurales ejecutadas antes de empaquetar.
-- [`README_PRUEBAS_QA_MSTEST.md`](README_PRUEBAS_QA_MSTEST.md): suite QA y casos cubiertos.
-- [`README_RENDIMIENTO.md`](README_RENDIMIENTO.md): auditoría de rendimiento por impacto y código optimizado.
-- [`README_RESUMEN_SISTEMA.md`](README_RESUMEN_SISTEMA.md): visión técnica general del sistema y de su evolución.
+Contiene las entidades, constantes y reglas pertenecientes al dominio.
 
-## Requisitos
+### ATRIUM.Infrastructure
 
-- .NET SDK 9.x
-- Visual Studio 2022 actualizado con ASP.NET and web development
-- SQL Server local
-- Entity Framework CLI 9.x si se usarán comandos `dotnet ef`
+Gestiona la persistencia mediante Entity Framework Core, SQL Server, Identity, migraciones y SeedData.
 
-## Primer arranque
+### ATRIUM.Web
 
-1. Abre `ATRIUM.Academy.sln`.
-2. Marca `ATRIUM.Web` como proyecto de inicio.
-3. Restaura paquetes NuGet.
-4. Compila la solución.
-5. Sigue `database/README_DATABASE.md` antes de aplicar cambios a una base existente.
-6. Configura el administrador mediante User Secrets.
+Contiene la aplicación ASP.NET Core MVC, controladores, servicios, ViewModels, Razor Views, CSS y JavaScript.
 
-### User Secrets
+### ATRIUM.Tests
 
-```powershell
-dotnet user-secrets set "AdminSeed:Email" "admin@atrium.local" --project .\ATRIUM.Web\ATRIUM.Web.csproj
-dotnet user-secrets set "AdminSeed:Password" "TU_CLAVE_SEGURA" --project .\ATRIUM.Web\ATRIUM.Web.csproj
-```
+Contiene la suite automatizada de pruebas mediante MSTest.
 
-La contraseña no debe escribirse en `appsettings.json`.
+---
 
-## Conexión local predeterminada
+## Seguridad
+
+El proyecto incorpora:
+
+- ASP.NET Core Identity.
+- Autorización basada en roles.
+- Validación de ownership sobre recursos privados.
+- Protección CSRF mediante AntiForgeryToken.
+- Validaciones server-side.
+- Protección contra overposting.
+- Validación de imágenes.
+- Validación de URLs HTTP/HTTPS.
+- Restricciones e índices a nivel de base de datos.
+- Invalidación de sesiones cuando corresponde.
+- Protección del último administrador.
+- User Secrets para información sensible.
+
+Las credenciales privadas no se almacenan dentro del repositorio.
+
+---
+
+## Configuración local
+
+### Requisitos
 
 ```text
-Server=localhost;Database=ATRIUM_Academy;Integrated Security=True;TrustServerCertificate=True;
+.NET SDK 9
+Visual Studio
+SQL Server
+Entity Framework Core 9
 ```
 
-## Roles
+Clonar:
 
-- `Administrador`
-- `Estudiante`
+```bash
+git clone <URL_DEL_REPOSITORIO>
+cd ATRIUM-Academy
+```
 
-La aplicación usa autorización global por defecto: una acción es privada salvo que se marque explícitamente con `[AllowAnonymous]`.
+Restaurar dependencias:
 
-## Estado de la baseline
+```bash
+dotnet restore
+```
 
-La solución ya incorpora **naming técnico, debugging, seguridad, mantenibilidad, QA con MSTest y optimizaciones de rendimiento de bajo riesgo**. Los cambios futuros deberían ser incrementales y respaldados por nuevas necesidades o mediciones reales.
+Compilar:
 
-## Fase QA — MSTest
+```bash
+dotnet build
+```
 
-La baseline de QA añade una suite MSTest orientada a comportamiento esperado, entradas inválidas, valores vacíos, límites, errores esperados, seguridad y casos poco comunes.
+---
 
-Documentación principal:
+## User Secrets
 
-- `README_PRUEBAS_QA_MSTEST.md`: catálogo completo de pruebas con objetivo, resultado esperado y código.
-- `README_CAMBIOS_QA.md`: cambios y defectos corregidos durante la fase QA.
-- `docs/VALIDACION_QA_ESTATICA.md`: comprobaciones estáticas realizadas antes del empaquetado.
+Las credenciales deben mantenerse fuera del repositorio.
+
+Ejemplo de estructura:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "TU_CONEXION_SQL_SERVER"
+  },
+
+  "AdminSeed": {
+    "Email": "TU_ADMIN",
+    "Password": "TU_PASSWORD",
+    "Nombre": "Administrador",
+    "Apellido": "ATRIUM"
+  },
+
+  "Email": {
+    "Host": "smtp.gmail.com",
+    "Port": 587,
+    "SenderEmail": "TU_CORREO@gmail.com",
+    "SenderName": "ATRIUM Academy",
+    "Username": "TU_CORREO@gmail.com",
+    "AppPassword": "TU_APP_PASSWORD",
+    "RecipientEmail": "TU_CORREO@gmail.com"
+  }
+}
+```
+
+Nunca publicar valores reales dentro de:
+
+```text
+appsettings.json
+appsettings.Development.json
+README.md
+```
+
+---
+
+## Base de datos
+
+ATRIUM utiliza SQL Server mediante Entity Framework Core.
+
+Aplicar migraciones desde Visual Studio:
+
+```powershell
+Update-Database -Project ATRIUM.Infrastructure -StartupProject ATRIUM.Web -Context AtriumDbContext
+```
+
+Mediante CLI:
+
+```bash
+dotnet ef database update \
+  --project ATRIUM.Infrastructure \
+  --startup-project ATRIUM.Web \
+  --context AtriumDbContext
+```
+
+Migraciones principales:
+
+```text
+20260915045435_InitialCreate
+20260916064111_AtriumTechnicalRefactor
+20261001185352_AddContactSupportModule
+```
+
+---
+
+## Ejecutar la aplicación
+
+```bash
+dotnet run --project ATRIUM.Web/ATRIUM.Web.csproj
+```
+
+---
+
+## Pruebas
 
 Ejecutar:
 
-```powershell
-dotnet test .\ATRIUM.Tests\ATRIUM.Tests.csproj
+```bash
+dotnet test ./ATRIUM.Tests/ATRIUM.Tests.csproj
 ```
 
+Estado actual:
 
-## Fase de rendimiento — v6
-
-Documentación:
-
-- `README_RENDIMIENTO.md`: problemas por impacto, optimizaciones aplicadas y código modificado.
-- `README_RESUMEN_SISTEMA.md`: explicación técnica general de la arquitectura y de toda la evolución del sistema.
-- `docs/VALIDACION_RENDIMIENTO_ESTATICA.md`: comprobaciones estáticas específicas de esta fase.
-
-Validación local recomendada:
-
-```powershell
-dotnet restore
-dotnet build
-dotnet test .\ATRIUM.Tests\ATRIUM.Tests.csproj
+```text
+Total:     83
+Correctas: 83
+Errores:    0
+Omitidas:   0
 ```
+
+Las pruebas cubren:
+
+- ViewModels.
+- Validaciones.
+- Entidades.
+- Entity Framework Core.
+- Servicios.
+- Controladores.
+- Seguridad declarativa.
+- Acceso a cursos.
+- Almacenamiento de imágenes.
+
+---
+
+## Rendimiento
+
+Durante el desarrollo se realizaron mejoras orientadas a:
+
+- Eliminación de consultas N+1.
+- Uso de `AsNoTracking`.
+- Proyecciones específicas.
+- Uso de `Any()` / `EXISTS`.
+- Agregaciones SQL.
+- Reducción de `Include`.
+- Menos viajes a base de datos.
+- Response Compression.
+- Optimización de imágenes WebP.
+
+---
+
+## Diseño
+
+Identidad:
+
+```text
+ATRIUM Academy
+Arquitectura · Diseño · Formación
+```
+
+Estilo:
+
+```text
+Minimalista
+Arquitectónico
+Dark
+Editorial
+```
+
+Tipografías:
+
+```text
+Space Grotesk
+Inter
+```
+
+La interfaz está adaptada para escritorio, tablet y dispositivos móviles.
+
+---
+
+## Próximos pasos
+
+- Despliegue en Microsoft Azure.
+- Panel administrativo de consultas.
+- Reintento de correos fallidos.
+- Observabilidad.
+- CI/CD.
+- Ampliación de pruebas.
+- Mejoras continuas de accesibilidad y UX.
+
+---
+
+## Autor
+
+**Benjamin Rumay**
+
+Software Developer  
+Ingeniería de Sistemas Computacionales
+
+---
+
+## ATRIUM Academy
+
+**Arquitectura · Diseño · Formación**
