@@ -1,0 +1,21 @@
+# Visual Studio / .NET
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Local secrets/configuration
+secrets.json
+appsettings.Local.json
+
+# Logs / temp
+*.log
+TestResults/
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db

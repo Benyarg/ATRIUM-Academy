@@ -1,0 +1,21 @@
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    @if (User.IsInRole(AppRoles.Administrator))
+    {
+        <a class="v-btn hide-mobile" asp-controller="Admin" asp-action="Index">Panel</a>
+    }
+    else
+    {
+        <a class="v-btn site-cart" asp-controller="CarroCompras" asp-action="Index">Carrito</a>
+    }
+    <a class="v-btn hide-mobile" asp-controller="Account" asp-action="Perfil">Mi cuenta</a>
+    <form asp-controller="Account" asp-action="Logout" method="post" class="site-logout-form">
+        <button class="v-btn v-btn-primary" type="submit">Salir</button>
+    </form>
+}
+else
+{
+    <a class="v-btn hide-mobile" asp-controller="Account" asp-action="Register">Crear cuenta</a>
+    <a class="v-btn v-btn-primary" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+}

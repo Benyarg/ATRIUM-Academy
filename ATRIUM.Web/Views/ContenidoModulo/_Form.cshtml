@@ -1,0 +1,32 @@
+@model ATRIUM.Domain.Models.ContenidoModulo
+<div class="v-form-grid">
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="IdModulo">Módulo</label>
+        <select class="v-select" asp-for="IdModulo" asp-items="ViewBag.IdModulo">
+        </select>
+    </div>
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="Titulo">
+        </label>
+        <input class="v-input" asp-for="Titulo"/>
+    </div>
+    <div class="v-field">
+        <label class="v-label" asp-for="Tipo">
+        </label>
+        <select class="v-select" asp-for="Tipo">
+            <option value="@ModuleContentTypes.Video">@ModuleContentTypes.Video</option>
+            <option value="@ModuleContentTypes.Pdf">@ModuleContentTypes.Pdf</option>
+            <option value="@ModuleContentTypes.Link">@ModuleContentTypes.Link</option>
+            <option value="@ModuleContentTypes.Practice">@ModuleContentTypes.Practice</option>
+        </select>
+    </div>
+    <div class="v-field">
+        <label class="v-label" asp-for="Orden">
+        </label>
+        <input class="v-input" asp-for="Orden" type="number"/>
+    </div>
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="URLContenido">URL del contenido</label>
+        <input class="v-input" asp-for="URLContenido" placeholder="https://..."/>
+    </div>
+</div>

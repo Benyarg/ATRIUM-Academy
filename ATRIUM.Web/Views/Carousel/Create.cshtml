@@ -1,0 +1,20 @@
+@model ATRIUM.Domain.Models.Carousel
+@{ ViewData["Title"]="Nuevo banner"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Portada</span>
+        <h1>Nuevo banner</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <partial name="_Form" model="Model"/>
+        <div class="v-field">
+            <label class="v-label">Imagen</label>
+            <input class="v-input" name="imagen" type="file" accept="image/jpeg,image/png,image/webp"/>
+            <span asp-validation-for="ImagenUrl">
+            </span>
+        </div>
+        <button class="v-btn v-btn-primary" type="submit">Crear banner</button>
+    </form>
+</div>

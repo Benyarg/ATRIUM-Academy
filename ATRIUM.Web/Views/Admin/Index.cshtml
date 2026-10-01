@@ -1,0 +1,26 @@
+@model ATRIUM.Web.ViewModels.AdminDashboardViewModel
+@{ ViewData["Title"] = "Dashboard"; Layout = "_AdminLayout"; }
+<div class="page-head">
+    <div><span class="eyebrow">Resumen</span><h1>Dashboard</h1><p class="text-muted-v">Estado general de ATRIUM Academy.</p></div>
+    <a class="v-btn" asp-controller="Home" asp-action="Index">Ver sitio público ↗</a>
+</div>
+<div class="admin-stats">
+    <div class="stat-card"><span>Usuarios</span><strong>@Model.TotalUsuarios</strong><small class="text-muted-v">Cuentas registradas</small></div>
+    <div class="stat-card"><span>Cursos</span><strong>@Model.TotalCursos</strong><small class="text-muted-v">Oferta académica</small></div>
+    <div class="stat-card"><span>Pedidos pendientes</span><strong>@Model.PedidosPendientes</strong><small class="text-muted-v">Requieren revisión</small></div>
+    <div class="stat-card"><span>Ventas aprobadas</span><strong>S/ @Model.VentasAprobadas.ToString("0.00")</strong><small class="text-muted-v">Total validado</small></div>
+</div>
+<div class="surface-panel admin-section">
+    <div class="admin-section-title"><div><span class="eyebrow">Actividad</span><h2>Últimos pedidos</h2></div><a class="v-btn" asp-controller="Pedido" asp-action="Index">Ver pedidos</a></div>
+    <div class="v-table-wrap">
+        <table class="v-table">
+            <thead><tr><th>Pedido</th><th>Usuario</th><th>Fecha</th><th>Total</th><th>Estado</th></tr></thead>
+            <tbody>
+            @foreach (var p in Model.UltimosPedidos)
+            {
+                <tr><td><strong>#@p.IdPedido</strong></td><td>@p.Usuario</td><td>@p.Fecha.ToLocalTime().ToString("dd/MM/yyyy")</td><td>S/ @p.Total.ToString("0.00")</td><td><span class="v-badge @(p.Estado == "Aprobado" ? "is-success" : p.Estado == "Rechazado" ? "is-danger" : "is-warning")">@p.Estado</span></td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

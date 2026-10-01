@@ -1,0 +1,535 @@
+@model ATRIUM.Web.ViewModels.ContactoViewModel
+
+@{
+    ViewData["Title"] = "Contacto";
+
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var accountEmail = isAuthenticated
+        ? User.Identity?.Name ?? string.Empty
+        : string.Empty;
+}
+
+<section class="public-hero public-hero-contact">
+    <div class="v-container public-hero-grid">
+
+        <div>
+            <span class="hero-kicker">
+                <span></span>
+                ATRIUM / Contacto
+            </span>
+
+            <h1>
+                Una duda concreta<br />
+                merece una <em>respuesta clara.</em>
+            </h1>
+        </div>
+
+        <div class="public-hero-note">
+            <p>
+                Cuéntanos qué necesitas y proporciona el contexto necesario
+                para poder orientarte de forma clara y ordenada.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+
+<section class="v-section contact-section">
+    <div class="v-container">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="eyebrow">Soporte</span>
+                <h2>¿Qué necesitas resolver?</h2>
+            </div>
+
+            <p>
+                Selecciona el área relacionada con tu consulta.
+                Esto nos permitirá identificar más rápido el contexto de tu caso.
+            </p>
+
+        </div>
+
+
+        <div class="contact-cards">
+
+            <article>
+                <span>01</span>
+
+                <h3>Información de cursos</h3>
+
+                <p>
+                    Consulta objetivos, contenidos, docentes, precios
+                    o características de los cursos disponibles en ATRIUM.
+                </p>
+
+                <a
+                    class="text-link"
+                    asp-controller="Tienda"
+                    asp-action="CursosDisponibles">
+                    Explorar catálogo ↗
+                </a>
+            </article>
+
+
+            <article>
+                <span>02</span>
+
+                <h3>Pedidos y pagos</h3>
+
+                <p>
+                    Si ya realizaste un pedido, incluye su número y utiliza
+                    el correo asociado a tu cuenta para poder identificarlo.
+                </p>
+
+                @if (isAuthenticated)
+                {
+                    <a
+                        class="text-link"
+                        asp-controller="Pedido"
+                        asp-action="MisPedidos">
+                        Ver mis pedidos ↗
+                    </a>
+                }
+                else
+                {
+                    <a
+                        class="text-link"
+                        asp-controller="Account"
+                        asp-action="Login">
+                        Iniciar sesión ↗
+                    </a>
+                }
+            </article>
+
+
+            <article>
+                <span>03</span>
+
+                <h3>Acceso y aprendizaje</h3>
+
+                <p>
+                    Recibe orientación sobre acceso a cursos,
+                    progreso, recursos educativos o certificados.
+                </p>
+
+                @if (isAuthenticated)
+                {
+                    <a
+                        class="text-link"
+                        asp-controller="Curso"
+                        asp-action="MisCursos">
+                        Ir a mis cursos ↗
+                    </a>
+                }
+                else
+                {
+                    <a
+                        class="text-link"
+                        asp-controller="Account"
+                        asp-action="Login">
+                        Acceder a mi cuenta ↗
+                    </a>
+                }
+            </article>
+
+        </div>
+
+    </div>
+</section>
+
+
+<section class="v-section contact-guide-section">
+
+    <div class="v-container contact-guide-grid">
+
+        <div>
+            <span class="eyebrow">Antes de contactar</span>
+
+            <h2>
+                Incluye el contexto necesario.
+            </h2>
+        </div>
+
+
+        <div class="contact-checklist">
+
+            <div>
+                <strong>01</strong>
+                <p>
+                    Correo registrado en ATRIUM si ya tienes una cuenta.
+                </p>
+            </div>
+
+            <div>
+                <strong>02</strong>
+                <p>
+                    Número de pedido cuando la consulta esté relacionada
+                    con una compra.
+                </p>
+            </div>
+
+            <div>
+                <strong>03</strong>
+                <p>
+                    Nombre del curso o recurso relacionado con tu consulta.
+                </p>
+            </div>
+
+            <div>
+                <strong>04</strong>
+                <p>
+                    Una explicación breve del problema y la acción
+                    que estabas intentando realizar.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="v-section contact-form-section">
+
+    <div class="v-container contact-form-layout">
+
+        <!-- INFORMACIÓN -->
+
+        <aside class="contact-form-info">
+
+            <span class="eyebrow">
+                Contacto
+            </span>
+
+            <h2>
+                Hablemos.
+            </h2>
+
+            <p>
+                Completa el formulario y envíanos tu consulta.
+                Procura explicar el caso de manera concreta para poder
+                ofrecerte una respuesta útil.
+            </p>
+
+
+            <div class="contact-channel">
+
+                <span>
+                    Correo
+                </span>
+
+                <a href="mailto:contacto.atriumacademy@gmail.com">
+                    contacto.atriumacademy@gmail.com
+                </a>
+
+            </div>
+
+
+            <div class="contact-channel">
+
+                <span>
+                    Plataforma
+                </span>
+
+                <strong>
+                    ATRIUM Academy
+                </strong>
+
+            </div>
+
+
+            @if (isAuthenticated)
+            {
+                <div class="contact-account-note">
+
+                    <span class="eyebrow">
+                        Sesión activa
+                    </span>
+
+                    <p>
+                        Tu consulta quedará asociada al correo
+                        con el que ingresaste a ATRIUM.
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <div class="contact-account-note">
+
+                    <span class="eyebrow">
+                        Visitante
+                    </span>
+
+                    <p>
+                        No necesitas una cuenta para realizar
+                        una consulta general.
+                    </p>
+
+                </div>
+            }
+
+        </aside>
+
+
+        <!-- FORMULARIO -->
+
+        <div class="contact-form-wrapper">
+
+            <form
+                asp-controller="Home"
+                asp-action="Contacto"
+                method="post"
+                class="contact-form">
+
+                @Html.AntiForgeryToken()
+
+
+                <div
+                    asp-validation-summary="ModelOnly"
+                    class="validation-summary">
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="form-field">
+
+                        <label asp-for="Nombre">
+                            Nombre
+                        </label>
+
+                        <input
+                            asp-for="Nombre"
+                            type="text"
+                            autocomplete="name"
+                            placeholder="Tu nombre" />
+
+                        <span
+                            asp-validation-for="Nombre"
+                            class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label asp-for="Email">
+                            Correo electrónico
+                        </label>
+
+                        @if (isAuthenticated)
+                        {
+                            <input
+                                asp-for="Email"
+                                type="email"
+                                value="@accountEmail"
+                                readonly />
+                        }
+                        else
+                        {
+                            <input
+                                asp-for="Email"
+                                type="email"
+                                autocomplete="email"
+                                placeholder="nombre@correo.com" />
+                        }
+
+                        <span
+                            asp-validation-for="Email"
+                            class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-field form-field-full">
+
+                        <label asp-for="TipoConsulta">
+                            Tipo de consulta
+                        </label>
+
+                        <select asp-for="TipoConsulta">
+
+                            <option value="">
+                                Selecciona una opción
+                            </option>
+
+                            <option value="Cursos">
+                                Información de cursos
+                            </option>
+
+                            <option value="Pedidos">
+                                Pedidos y pagos
+                            </option>
+
+                            <option value="Acceso">
+                                Acceso a cursos
+                            </option>
+
+                            <option value="Recursos">
+                                Recursos educativos
+                            </option>
+
+                            <option value="Progreso">
+                                Progreso
+                            </option>
+
+                            <option value="Certificados">
+                                Certificados
+                            </option>
+
+                            <option value="Cuenta">
+                                Mi cuenta
+                            </option>
+
+                            <option value="Otro">
+                                Otra consulta
+                            </option>
+
+                        </select>
+
+                        <span
+                            asp-validation-for="TipoConsulta"
+                            class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-field form-field-full">
+
+                        <label asp-for="NumeroPedido">
+                            Número de pedido
+                            <span>Opcional</span>
+                        </label>
+
+                        <input
+                            asp-for="NumeroPedido"
+                            type="text"
+                            placeholder="Ej. 1024" />
+
+                        <span
+                            asp-validation-for="NumeroPedido"
+                            class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-field form-field-full">
+
+                        <label asp-for="Asunto">
+                            Asunto
+                        </label>
+
+                        <input
+                            asp-for="Asunto"
+                            type="text"
+                            placeholder="Resume brevemente tu consulta" />
+
+                        <span
+                            asp-validation-for="Asunto"
+                            class="field-validation">
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-field form-field-full">
+
+                        <label asp-for="Mensaje">
+                            Mensaje
+                        </label>
+
+                        <textarea
+                            asp-for="Mensaje"
+                            rows="7"
+                            placeholder="Describe tu consulta y proporciona el contexto necesario.">
+                        </textarea>
+
+                        <span
+                            asp-validation-for="Mensaje"
+                            class="field-validation">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-form-footer">
+
+                    <p>
+                        Al enviar tu consulta utilizaremos esta información
+                        únicamente para atender tu solicitud.
+                    </p>
+
+                    <button
+                        type="submit"
+                        class="v-btn v-btn-primary">
+
+                        Enviar consulta
+
+                        <span aria-hidden="true">
+                            ↗
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="contact-channel-section">
+
+    <div class="v-container contact-channel-panel">
+
+        <div>
+
+            <span class="eyebrow">
+                Ayuda
+            </span>
+
+            <h2>
+                Tal vez tu respuesta ya está disponible.
+            </h2>
+
+            <p class="text-muted-v">
+                Revisa las preguntas frecuentes para conocer cómo funcionan
+                los cursos, pedidos, accesos y certificados de ATRIUM Academy.
+            </p>
+
+        </div>
+
+        <a
+            class="v-btn"
+            asp-controller="Home"
+            asp-action="FAQ">
+
+            Revisar FAQ
+
+        </a>
+
+    </div>
+
+</section>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

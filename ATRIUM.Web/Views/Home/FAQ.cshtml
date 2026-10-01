@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Preguntas frecuentes";
+}
+<section class="public-hero public-hero-compact">
+    <div class="v-container public-hero-grid">
+        <div>
+            <span class="hero-kicker"><span></span> Ayuda / FAQ</span>
+            <h1>Antes de entrar,<br/><em>resolvamos tus dudas.</em></h1>
+        </div>
+        <div class="public-hero-note">
+            <p>Información sobre cuentas, cursos, pedidos, acceso a contenidos, progreso y certificados dentro de ATRIUM Academy.</p>
+        </div>
+    </div>
+</section>
+
+<section class="v-section faq-section">
+    <div class="v-container faq-layout">
+        <aside class="faq-aside">
+            <span class="eyebrow">Información</span>
+            <h2>Lo esencial para usar la plataforma.</h2>
+            <p>Las funciones privadas requieren una cuenta. El catálogo y las páginas institucionales pueden consultarse sin iniciar sesión.</p>
+            <a class="v-btn" asp-controller="Home" asp-action="Contacto">Necesito más ayuda</a>
+        </aside>
+        <div class="faq-list">
+            <details open>
+                <summary><span>01</span>¿Necesito una cuenta para revisar los cursos?</summary>
+                <div><p>No. Puedes navegar por el catálogo y revisar la información pública de cada curso como visitante. Para comprar, acceder a contenidos, registrar progreso o consultar pedidos sí necesitas iniciar sesión.</p></div>
+            </details>
+            <details>
+                <summary><span>02</span>¿Cómo obtengo acceso a un curso?</summary>
+                <div><p>Inicia sesión, selecciona el curso y crea tu pedido. El acceso se habilita cuando el pedido es validado y aprobado desde la administración de ATRIUM.</p></div>
+            </details>
+            <details>
+                <summary><span>03</span>¿Dónde encuentro un curso que ya fue aprobado?</summary>
+                <div><p>Los cursos con acceso aprobado aparecen en la sección “Mis cursos” de tu navegación como estudiante.</p></div>
+            </details>
+            <details>
+                <summary><span>04</span>¿Puedo revisar el estado de mi pedido?</summary>
+                <div><p>Sí. Dentro de “Pedidos” puedes consultar tus solicitudes y verificar si siguen pendientes, fueron aprobadas o rechazadas.</p></div>
+            </details>
+            <details>
+                <summary><span>05</span>¿Cómo funciona el progreso?</summary>
+                <div><p>Las lecciones a las que tienes acceso pueden marcarse como completadas. Ese registro queda asociado a tu cuenta y puede revisarse desde “Progreso”.</p></div>
+            </details>
+            <details>
+                <summary><span>06</span>¿Qué son los recursos de ATRIUM?</summary>
+                <div><p>Son materiales complementarios publicados para estudiantes autenticados. Pueden estar relacionados con cursos y sirven como apoyo adicional al proceso de aprendizaje.</p></div>
+            </details>
+            <details>
+                <summary><span>07</span>¿Cuándo puedo generar un certificado?</summary>
+                <div><p>Cuando tengas acceso al curso y hayas completado los contenidos requeridos. Si cumples esas condiciones, el sistema permite generar un certificado asociado a tu cuenta.</p></div>
+            </details>
+            <details>
+                <summary><span>08</span>¿Se puede verificar un certificado sin iniciar sesión?</summary>
+                <div><p>Sí. La validación mediante código es pública para que una tercera persona pueda comprobar la existencia de un certificado emitido por ATRIUM.</p></div>
+            </details>
+        </div>
+    </div>
+</section>
+
+<section class="faq-bottom-cta">
+    <div class="v-container faq-bottom-inner">
+        <div><span class="eyebrow">¿No encontraste tu respuesta?</span><h2>Cuéntanos qué necesitas resolver.</h2></div>
+        <a class="v-btn v-btn-primary" asp-controller="Home" asp-action="Contacto">Ir a contacto ↗</a>
+    </div>
+</section>

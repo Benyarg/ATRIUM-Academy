@@ -1,0 +1,12 @@
+@model ATRIUM.Domain.Models.Curso
+@{ ViewData["Title"] = "Comprar curso"; }
+<section class="v-section">
+    <div class="v-container">
+        <div class="v-empty">
+            <span class="eyebrow">ATRIUM Academy</span>
+            <h1>@Model.Nombre</h1>
+            <p class="v-price">S/ @Model.PrecioFinal.ToString("0.00")</p>
+            <a class="v-btn v-btn-primary" asp-action="FinalizarPedido" asp-route-idCurso="@Model.IdCurso">Continuar compra</a>
+        </div>
+    </div>
+</section>

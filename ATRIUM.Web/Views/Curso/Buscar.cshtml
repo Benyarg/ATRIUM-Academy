@@ -1,0 +1,23 @@
+@model IEnumerable<ATRIUM.Domain.Models.Curso>
+@{ ViewData["Title"] = "Buscar cursos"; }
+<section class="v-section">
+    <div class="v-container">
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">Resultados</span>
+                <h1>Buscar cursos</h1>
+            </div>
+        </div>
+        <div class="course-grid">
+            @foreach(var curso in Model)
+            {
+                <article class="course-card">
+                    <div class="course-card-body">
+                        <h3>@curso.Nombre</h3>
+                        <p class="text-muted-v">@curso.Descripcion</p>
+                        <a class="v-btn" asp-action="Details" asp-route-id="@curso.IdCurso">Ver curso</a>
+                    </div>
+                </article>
+                }</div>
+            </div>
+        </section>

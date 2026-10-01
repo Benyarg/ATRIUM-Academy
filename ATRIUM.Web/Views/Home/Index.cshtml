@@ -1,0 +1,242 @@
+@model ATRIUM.Web.ViewModels.HomeIndexViewModel
+@{
+    ViewData["Title"] = "Arquitectura · Diseño · Formación";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+}
+
+<section class="home-hero">
+    <div class="home-hero-grid v-container">
+        <div class="hero-copy">
+            <div class="hero-kicker"><span></span> ATRIUM Academy · Arquitectura · Diseño · Formación</div>
+            <h1>Aprende a proyectar<br/>con <em>criterio digital.</em></h1>
+            <p>Una plataforma de formación en arquitectura, representación y herramientas digitales pensada para convertir conocimiento técnico en procesos de trabajo más claros y profesionales.</p>
+            <div class="hero-actions">
+                <a class="v-btn v-btn-primary v-btn-lg" asp-controller="Tienda" asp-action="CursosDisponibles">Explorar cursos <span>↗</span></a>
+                @if (isAuthenticated)
+                {
+                    <a class="v-btn v-btn-lg" asp-controller="Curso" asp-action="MisCursos">Continuar aprendiendo</a>
+                }
+                else
+                {
+                    <a class="v-btn v-btn-lg" asp-controller="Home" asp-action="Nosotros">Conocer ATRIUM</a>
+                }
+            </div>
+        </div>
+        <div class="hero-side-note">
+            <span class="eyebrow">ATRIUM / 01</span>
+            <p>Arquitectura + tecnología + aprendizaje aplicado.</p>
+            <div class="hero-line"></div>
+            <small>Desarrolla herramientas. Mejora tu proceso. Construye criterio.</small>
+        </div>
+    </div>
+    <div class="hero-scroll">Desliza para explorar <span>↓</span></div>
+</section>
+
+<section class="home-proof">
+    <div class="v-container proof-grid">
+        <div class="proof-intro">
+            <span class="eyebrow">Plataforma ATRIUM</span>
+            <h2>Un espacio para aprender sin desconectarte del proyecto real.</h2>
+        </div>
+        <div class="proof-stat"><strong>@Model.TotalCursos</strong><span>Cursos publicados</span></div>
+        <div class="proof-stat"><strong>@Model.TotalRecursos</strong><span>Recursos activos</span></div>
+        <div class="proof-stat"><strong>@Model.Categorias.Count</strong><span>Áreas de aprendizaje</span></div>
+    </div>
+</section>
+
+@if (Model.Banners.Any())
+{
+    <section class="v-section home-banners-section">
+        <div class="v-container">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Destacado</span>
+                    <h2>Lo que está pasando en ATRIUM.</h2>
+                </div>
+                <p>Contenido seleccionado desde la administración para comunicar novedades, lanzamientos y propuestas de la academia.</p>
+            </div>
+            <div class="banner-grid">
+                @foreach (var banner in Model.Banners)
+                {
+                    <article class="banner-card">
+                        <img src="@banner.ImagenUrl" alt="@banner.Titulo" loading="lazy" decoding="async" />
+                        <div class="banner-overlay">
+                            <span class="eyebrow">ATRIUM</span>
+                            <h3>@banner.Titulo</h3>
+                            <p>@banner.Descripcion</p>
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<section class="v-section home-courses-section">
+    <div class="v-container">
+        <div class="section-heading section-heading-wide">
+            <div>
+                <span class="eyebrow">Academy / Cursos</span>
+                <h2>Aprende herramientas dentro de un proceso.</h2>
+            </div>
+            <div class="section-heading-side">
+                <p>Explora cursos enfocados en arquitectura digital, representación y producción de proyectos.</p>
+                <a class="text-link" asp-controller="Tienda" asp-action="CursosDisponibles">Ver catálogo completo <span>↗</span></a>
+            </div>
+        </div>
+
+        @if (!Model.CursosDestacados.Any())
+        {
+            <div class="v-empty">Los próximos cursos de ATRIUM se publicarán aquí.</div>
+        }
+        else
+        {
+            <div class="course-grid course-grid-editorial">
+                @{ var courseIndex = 0; }
+                @foreach (var curso in Model.CursosDestacados)
+                {
+                    courseIndex++;
+                    <article class="course-card course-card-editorial">
+                        <a class="course-media" asp-controller="Curso" asp-action="Details" asp-route-id="@curso.IdCurso">
+                            @if (!string.IsNullOrWhiteSpace(curso.URLImagen))
+                            {
+                                <img src="@curso.URLImagen" alt="@curso.Nombre" loading="lazy" decoding="async" />
+                            }
+                            else
+                            {
+                                <div class="course-placeholder">ATRIUM</div>
+                            }
+                            <span class="course-number">@(courseIndex.ToString("00"))</span>
+                        </a>
+                        <div class="course-card-body">
+                            <div class="course-meta-row">
+                                <span>@(curso.Categoria?.Nombre ?? "ATRIUM")</span>
+                                <span>S/ @curso.PrecioFinal.ToString("0.00")</span>
+                            </div>
+                            <h3><a asp-controller="Curso" asp-action="Details" asp-route-id="@curso.IdCurso">@curso.Nombre</a></h3>
+                            <p>@curso.Descripcion</p>
+                            <div class="course-card-bottom">
+                                <span>@(string.IsNullOrWhiteSpace(curso.DocenteAsignado) ? "Equipo ATRIUM" : curso.DocenteAsignado)</span>
+                                <a class="round-link" asp-controller="Curso" asp-action="Details" asp-route-id="@curso.IdCurso" aria-label="Ver @curso.Nombre">↗</a>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@if (Model.Categorias.Any())
+{
+    <section class="v-section home-categories-section">
+        <div class="v-container">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Áreas</span>
+                    <h2>Encuentra tu siguiente enfoque.</h2>
+                </div>
+                <p>Cada categoría organiza cursos alrededor de una habilidad o parte concreta del flujo arquitectónico.</p>
+            </div>
+            <div class="category-list">
+    @foreach (var categoria in Model.Categorias)
+    {
+        <a class="category-row"
+           asp-controller="Tienda"
+           asp-action="CursosDisponibles"
+           asp-route-categoria="@categoria.Id">
+
+            <div class="category-content">
+                <h3>@categoria.Nombre</h3>
+                <p>@categoria.Descripcion</p>
+            </div>
+
+            <span class="category-count">
+                @categoria.TotalCursos @(categoria.TotalCursos == 1 ? "curso" : "cursos")
+            </span>
+
+            <span class="category-arrow" aria-hidden="true">↗</span>
+        </a>
+    }
+</div>
+        </div>
+    </section>
+}
+
+<section class="v-section method-section">
+    <div class="v-container method-grid">
+        <div class="method-sticky">
+            <span class="eyebrow">Método ATRIUM</span>
+            <h2>Del contenido a una forma de trabajar.</h2>
+            <p>La plataforma conecta aprendizaje, práctica, seguimiento y acceso a recursos para que cada curso tenga continuidad.</p>
+            <a class="v-btn" asp-controller="Home" asp-action="Nosotros">Cómo pensamos la formación</a>
+        </div>
+        <div class="method-steps">
+            <article><span>01</span><div><h3>Explora</h3><p>Revisa cursos, objetivos, contenidos y herramientas antes de decidir qué necesitas aprender.</p></div></article>
+            <article><span>02</span><div><h3>Aprende</h3><p>Avanza por módulos y lecciones organizadas para mantener una secuencia clara de trabajo.</p></div></article>
+            <article><span>03</span><div><h3>Aplica</h3><p>Integra lo aprendido en ejercicios, procesos de representación y proyectos propios.</p></div></article>
+            <article><span>04</span><div><h3>Continúa</h3><p>Consulta recursos, registra tu progreso y conserva tus cursos disponibles desde tu cuenta.</p></div></article>
+        </div>
+    </div>
+</section>
+
+<section class="v-section home-access-section">
+    <div class="v-container access-panel">
+        <div class="access-copy">
+            <span class="eyebrow">Tu cuenta ATRIUM</span>
+            @if (isAuthenticated)
+            {
+                <h2>Tu aprendizaje continúa donde lo dejaste.</h2>
+                <p>Accede a tus cursos aprobados, recursos, progreso, pedidos y certificados desde una navegación creada para estudiantes.</p>
+                <div class="hero-actions">
+                    <a class="v-btn v-btn-primary" asp-controller="Curso" asp-action="MisCursos">Ir a mis cursos ↗</a>
+                    <a class="v-btn" asp-controller="ProgresoEstudiante" asp-action="Index">Ver progreso</a>
+                </div>
+            }
+            else
+            {
+                <h2>Explora libremente. Accede cuando estés listo.</h2>
+                <p>Como visitante puedes conocer ATRIUM, revisar el catálogo y consultar la información pública. Las funciones de aprendizaje, compras, recursos y seguimiento se habilitan al iniciar sesión.</p>
+                <div class="hero-actions">
+                    <a class="v-btn v-btn-primary" asp-controller="Account" asp-action="Register">Crear cuenta ↗</a>
+                    <a class="v-btn" asp-controller="Account" asp-action="Login">Ya tengo cuenta</a>
+                </div>
+            }
+        </div>
+        <div class="access-map" aria-hidden="true">
+            <div class="access-node is-main">ATRIUM</div>
+            <div class="access-node">Cursos</div>
+            <div class="access-node">Recursos</div>
+            <div class="access-node">Progreso</div>
+            <div class="access-node">Certificados</div>
+        </div>
+    </div>
+</section>
+
+<section class="v-section home-faq-preview">
+    <div class="v-container faq-preview-grid">
+        <div>
+            <span class="eyebrow">Preguntas frecuentes</span>
+            <h2>Antes de comenzar.</h2>
+            <p class="text-muted-v">Revisa cómo funciona el acceso, el proceso de compra y la experiencia dentro de ATRIUM Academy.</p>
+            <a class="text-link" asp-controller="Home" asp-action="FAQ">Ver todas las preguntas <span>↗</span></a>
+        </div>
+        <div class="faq-mini-list">
+            <div><span>01</span><p>¿Cómo obtengo acceso a un curso?</p></div>
+            <div><span>02</span><p>¿Dónde veo mis cursos después de la aprobación?</p></div>
+            <div><span>03</span><p>¿Cómo se registra mi progreso?</p></div>
+            <div><span>04</span><p>¿Cómo valido un certificado?</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="home-final-cta">
+    <div class="v-container final-cta-inner">
+        <span class="eyebrow">ATRIUM Academy</span>
+        <h2>Diseñar mejor también implica<br/>aprender mejor.</h2>
+        <div class="hero-actions">
+            <a class="v-btn v-btn-primary v-btn-lg" asp-controller="Tienda" asp-action="CursosDisponibles">Ver cursos disponibles ↗</a>
+            <a class="v-btn v-btn-lg" asp-controller="Home" asp-action="Contacto">Contactar a ATRIUM</a>
+        </div>
+    </div>
+</section>

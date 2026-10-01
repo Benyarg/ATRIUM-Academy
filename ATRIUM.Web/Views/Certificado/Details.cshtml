@@ -1,0 +1,18 @@
+@model ATRIUM.Domain.Models.Certificado
+@{ ViewData["Title"] = "Certificado"; }
+<section class="v-section">
+    <div class="v-container">
+        <div class="surface-panel certificate-shell">
+            <img class="certificate-brand" src="~/img/ATRIUM-ACADEMY-LOCKUP.webp" alt="ATRIUM Academy" />
+            <span class="eyebrow">Certificado ATRIUM Academy</span>
+            <h1>@Model.Curso?.Nombre</h1>
+            <p class="lead-v">Se certifica la finalización del recorrido académico asociado a este curso.</p>
+            <h2>@Model.Usuario?.Nombre @Model.Usuario?.Apellido</h2>
+            <p class="text-muted-v">Emitido el @Model.FechaEmision.ToLocalTime().ToString("dd 'de' MMMM 'de' yyyy")</p>
+            <div class="certificate-code">@Model.CodigoUnico</div>
+            <div class="v-actions">
+                <a class="v-btn" asp-action="Validar" asp-route-codigo="@Model.CodigoUnico">Validar certificado</a>
+            </div>
+        </div>
+    </div>
+</section>

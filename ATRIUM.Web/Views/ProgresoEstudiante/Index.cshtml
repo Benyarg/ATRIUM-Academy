@@ -1,0 +1,40 @@
+@model IEnumerable<ATRIUM.Domain.Models.ProgresoEstudiante>
+@{ ViewData["Title"] = "Mi progreso"; }
+
+<section class="student-intro">
+    <div class="v-container">
+        <div class="page-head">
+            <div><span class="eyebrow">Aprendizaje</span><h1>Mi progreso</h1><p class="lead-v">Revisa los contenidos que ya completaste dentro de tus cursos.</p></div>
+            <a class="v-btn" asp-controller="Curso" asp-action="MisCursos">Volver a mis cursos</a>
+        </div>
+    </div>
+</section>
+
+<section class="v-section v-section-compact">
+    <div class="v-container">
+        @if (!Model.Any())
+        {
+            <div class="v-empty"><span class="eyebrow">Sin actividad registrada</span><h2>Empieza un curso para construir tu progreso.</h2><p>Los contenidos que marques como completados aparecerán aquí.</p></div>
+        }
+        else
+        {
+            <div class="v-table-wrap">
+                <table class="v-table">
+                    <thead><tr><th>Curso</th><th>Módulo</th><th>Contenido</th><th>Estado</th><th>Fecha</th></tr></thead>
+                    <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.ContenidoModulo?.ModuloCurso?.Curso?.Nombre</td>
+                            <td>@p.ContenidoModulo?.ModuloCurso?.Titulo</td>
+                            <td>@p.ContenidoModulo?.Titulo</td>
+                            <td><span class="v-badge @(p.Completado ? "is-success" : "is-warning")">@(p.Completado ? "Completado" : "Pendiente")</span></td>
+                            <td>@(p.FechaCompletado > DateTime.MinValue ? p.FechaCompletado.ToLocalTime().ToString("dd/MM/yyyy") : "—")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>

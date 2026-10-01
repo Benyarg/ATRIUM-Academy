@@ -1,0 +1,117 @@
+@model List<ATRIUM.Domain.Models.Curso>
+@{
+    ViewData["Title"] = "Cursos";
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+}
+
+<section class="catalog-hero">
+    <div class="v-container catalog-hero-grid">
+        <div>
+            <span class="hero-kicker"><span></span> Catálogo ATRIUM</span>
+            <h1>Herramientas para<br/><em>proyectar mejor.</em></h1>
+        </div>
+        <div class="catalog-hero-copy">
+            <p>Explora cursos de arquitectura digital, representación y producción. Como visitante puedes revisar el catálogo y la información de cada curso; el acceso al aprendizaje se habilita desde una cuenta ATRIUM.</p>
+        </div>
+    </div>
+</section>
+
+<section class="catalog-controls-section">
+    <div class="v-container">
+        <form class="catalog-filter" method="get">
+            <div class="catalog-search-field">
+                <span>⌕</span>
+                <input type="search" name="query" value="@ViewBag.Query" placeholder="Buscar por curso, tema o categoría" aria-label="Buscar cursos" />
+            </div>
+            <select name="categoria" asp-items="ViewBag.Categorias" aria-label="Filtrar por categoría">
+                <option value="">Todas las categorías</option>
+            </select>
+            <button class="v-btn v-btn-primary" type="submit">Aplicar filtros</button>
+            @if (!string.IsNullOrWhiteSpace(ViewBag.Query as string) || Context.Request.Query.ContainsKey("categoria"))
+            {
+                <a class="v-btn" asp-action="CursosDisponibles">Limpiar</a>
+            }
+        </form>
+        <div class="catalog-result-meta">
+            <span>@Model.Count resultado(s)</span>
+            <span>ATRIUM Academy / Catálogo</span>
+        </div>
+    </div>
+</section>
+
+<section class="v-section catalog-results-section">
+    <div class="v-container">
+        @if (Model.Count == 0)
+        {
+            <div class="catalog-empty">
+                <span class="eyebrow">Sin resultados</span>
+                <h2>No encontramos cursos con esos filtros.</h2>
+                <p>Prueba con otro término o vuelve al catálogo completo.</p>
+                <a class="v-btn v-btn-primary" asp-action="CursosDisponibles">Ver todos los cursos</a>
+            </div>
+        }
+        else
+        {
+            <div class="course-grid course-grid-editorial catalog-course-grid">
+                @{ var index = 0; }
+                @foreach (var curso in Model)
+                {
+                    index++;
+                    <article class="course-card course-card-editorial">
+                        <a class="course-media" asp-controller="Curso" asp-action="Details" asp-route-id="@curso.IdCurso">
+                            @if (!string.IsNullOrWhiteSpace(curso.URLImagen))
+                            {
+                                <img src="@curso.URLImagen" alt="@curso.Nombre" loading="lazy" decoding="async" />
+                            }
+                            else
+                            {
+                                <div class="course-placeholder">ATRIUM</div>
+                            }
+                            <span class="course-number">@(index.ToString("00"))</span>
+                        </a>
+                        <div class="course-card-body">
+                            <div class="course-meta-row">
+                                <span>@(curso.Categoria?.Nombre ?? "ATRIUM")</span>
+                                <span>S/ @curso.PrecioFinal.ToString("0.00")</span>
+                            </div>
+                            <h3><a asp-controller="Curso" asp-action="Details" asp-route-id="@curso.IdCurso">@curso.Nombre</a></h3>
+                            <p>@curso.Descripcion</p>
+                            <div class="course-card-bottom">
+                                <span>@(string.IsNullOrWhiteSpace(curso.DocenteAsignado) ? "Equipo ATRIUM" : curso.DocenteAsignado)</span>
+                                <div class="catalog-card-actions">
+                                    <a class="text-link" asp-controller="Curso" asp-action="Details" asp-route-id="@curso.IdCurso">Ver detalles ↗</a>
+                                    @if (isAuthenticated)
+                                    {
+                                        <form asp-controller="CarroCompras" asp-action="Agregar" method="post">
+                                            <input type="hidden" name="idCurso" value="@curso.IdCurso" />
+                                            <button class="round-link" type="submit" aria-label="Agregar @curso.Nombre al carrito">+</button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@if (!isAuthenticated)
+{
+    <section class="catalog-account-cta">
+        <div class="v-container catalog-account-inner">
+            <div>
+                <span class="eyebrow">Acceso ATRIUM</span>
+                <h2>El catálogo es público.<br/>Tu aprendizaje es personal.</h2>
+            </div>
+            <div>
+                <p>Crear una cuenta habilita compras, cursos aprobados, recursos, progreso, pedidos y certificados.</p>
+                <div class="hero-actions">
+                    <a class="v-btn v-btn-primary" asp-controller="Account" asp-action="Register">Crear cuenta ↗</a>
+                    <a class="v-btn" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+                </div>
+            </div>
+        </div>
+    </section>
+}

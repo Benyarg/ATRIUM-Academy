@@ -1,0 +1,15 @@
+@model ATRIUM.Domain.Models.Categoria
+@{ ViewData["Title"]="Eliminar categoría"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Confirmación</span>
+        <h1>Eliminar @Model.Nombre</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <p class="text-muted-v">Solo se puede eliminar si no tiene cursos asociados.</p>
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <button class="v-btn v-btn-danger" data-confirm="¿Eliminar esta categoría?" type="submit">Eliminar</button>
+        <a class="v-btn" asp-action="Index">Cancelar</a>
+    </form>
+</div>

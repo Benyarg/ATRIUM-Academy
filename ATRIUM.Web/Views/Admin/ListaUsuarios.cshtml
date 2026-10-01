@@ -1,0 +1,42 @@
+@model IEnumerable<ATRIUM.Web.ViewModels.UsuarioListaItemViewModel>
+@{ ViewData["Title"] = "Usuarios"; Layout = "_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Cuentas</span>
+        <h1>Usuarios</h1>
+    </div>
+    <form method="get">
+        <input class="v-input" type="search" name="query" placeholder="Buscar usuario"/>
+    </form>
+</div>
+<div class="v-table-wrap">
+    <table class="v-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var u in Model)
+            {
+                <tr>
+                    <td>
+                        <strong>@u.Nombre @u.Apellido</strong>
+                    </td>
+                    <td>@u.Email</td>
+                    <td>@u.Telefono</td>
+                    <td>
+                        <div class="v-actions">
+                            <a class="v-btn" asp-action="EditarUsuario" asp-route-id="@u.Id">Editar</a>
+                            <form asp-action="EliminarUsuario" asp-route-id="@u.Id" method="post">
+                                <button class="v-btn v-btn-danger" type="submit" data-confirm="¿Eliminar esta cuenta?">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                }</tbody>
+            </table>
+        </div>

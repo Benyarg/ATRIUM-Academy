@@ -1,0 +1,22 @@
+@model ATRIUM.Domain.Models.Carousel
+@{ ViewData["Title"]="Editar banner"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Portada</span>
+        <h1>Editar banner</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+        <input asp-for="Id" type="hidden"/>
+        <input asp-for="ImagenUrl" type="hidden"/>
+        <partial name="_Form" model="Model"/>
+        @if(!string.IsNullOrWhiteSpace(Model.ImagenUrl))
+        {
+            <img class="v-img-thumb" src="@Model.ImagenUrl" alt="Imagen actual" loading="lazy" decoding="async" />}<div class="v-field">
+            <label class="v-label">Nueva imagen (opcional)</label>
+            <input class="v-input" name="nuevaImagen" type="file" accept="image/jpeg,image/png,image/webp"/>
+        </div>
+        <button class="v-btn v-btn-primary" type="submit">Guardar</button>
+    </form>
+</div>

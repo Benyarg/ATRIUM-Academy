@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#060607" />
+    <title>@ViewData["Title"] - ATRIUM Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="~/img/ATRIUM-FAVICON.png" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/variables.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/typography.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/components/components.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layouts/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/app.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <a class="admin-logo brand-lockup" asp-controller="Admin" asp-action="Index" aria-label="ATRIUM Academy - Administración">
+            <img class="brand-mark" src="~/img/ATRIUM-MARK.webp" alt="" aria-hidden="true" />
+            <span class="brand-type"><strong>ATRIUM</strong><span>Academy · Admin</span></span>
+        </a>
+        <nav class="admin-nav">
+            <a asp-controller="Admin" asp-action="Index">Dashboard</a>
+            <span class="nav-kicker">Academia</span>
+            <a asp-controller="Curso" asp-action="Index">Cursos</a>
+            <a asp-controller="Categoria" asp-action="Index">Categorías</a>
+            <a asp-controller="ModuloCurso" asp-action="Index">Módulos</a>
+            <a asp-controller="ContenidoModulo" asp-action="Index">Lecciones</a>
+            <a asp-controller="ContenidoEducativo" asp-action="Index">Recursos</a>
+            <span class="nav-kicker">Operación</span>
+            <a asp-controller="Pedido" asp-action="Index">Pedidos</a>
+            <a asp-controller="Admin" asp-action="ListaUsuarios">Usuarios</a>
+            <a asp-controller="Certificado" asp-action="Index">Certificados</a>
+            <a asp-controller="Carousel" asp-action="Index">Portada</a>
+        </nav>
+        <div class="admin-sidebar-bottom"><a class="v-btn" asp-controller="Home" asp-action="Index">Ver sitio público ↗</a></div>
+    </aside>
+    <div class="admin-main">
+        <header class="admin-topbar">
+            <button class="v-btn admin-menu-button" type="button" data-admin-toggle>Menú</button>
+            <div class="admin-topbar-center"><strong>ATRIUM Academy</strong><div class="text-muted-v">Panel de administración</div></div>
+            <form asp-controller="Account" asp-action="Logout" method="post"><button class="v-btn" type="submit">Cerrar sesión</button></form>
+        </header>
+        <main class="admin-content">
+            @if (TempData["SuccessMessage"] is string success) { <div class="alert-v alert-v-success">@success</div> }
+            @if (TempData["ErrorMessage"] is string error) { <div class="alert-v alert-v-danger">@error</div> }
+            @if (TempData["InfoMessage"] is string info) { <div class="alert-v alert-v-info">@info</div> }
+            @RenderBody()
+        </main>
+    </div>
+</div>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

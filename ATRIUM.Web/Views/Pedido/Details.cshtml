@@ -1,0 +1,25 @@
+@model ATRIUM.Domain.Models.Pedido
+@{ ViewData["Title"]=$"Pedido #{Model.IdPedido}"; Layout=User.IsInRole(AppRoles.Administrator)?"_AdminLayout":"_Layout"; }
+@if(User.IsInRole(AppRoles.Administrator))
+{
+    <div class="page-head">
+        <div>
+            <span class="eyebrow">Pedido</span>
+            <h1>#@Model.IdPedido</h1>
+        </div>
+    </div>
+    <partial name="_PedidoDetalle" model="Model"/>}
+    else
+    {
+        <section class="v-section">
+            <div class="v-container">
+                <div class="page-head">
+                    <div>
+                        <span class="eyebrow">Pedido</span>
+                        <h1>#@Model.IdPedido</h1>
+                    </div>
+                </div>
+                <partial name="_PedidoDetalle" model="Model"/>
+            </div>
+        </section>
+    }

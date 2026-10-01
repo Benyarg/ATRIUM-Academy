@@ -1,0 +1,14 @@
+@model ATRIUM.Domain.Models.ContenidoEducativo
+@{ ViewData["Title"]="Nuevo recurso"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Biblioteca</span>
+        <h1>Nuevo recurso</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <form asp-action="Create" method="post">
+        <partial name="_Form" model="Model"/>
+        <button class="v-btn v-btn-primary" type="submit">Publicar</button>
+    </form>
+</div>

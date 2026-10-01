@@ -1,0 +1,15 @@
+@model ATRIUM.Domain.Models.ContenidoModulo
+@{ ViewData["Title"]="Editar lección"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Academia</span>
+        <h1>Editar lección</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <form asp-action="Edit" asp-route-id="@Model.IdContenido" method="post">
+        <input asp-for="IdContenido" type="hidden"/>
+        <partial name="_Form" model="Model"/>
+        <button class="v-btn v-btn-primary" type="submit">Guardar</button>
+    </form>
+</div>

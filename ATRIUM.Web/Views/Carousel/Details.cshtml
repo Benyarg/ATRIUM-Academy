@@ -1,0 +1,13 @@
+@model ATRIUM.Domain.Models.Carousel
+@{ ViewData["Title"]="Detalle banner"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Banner</span>
+        <h1>@Model.Titulo</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    @if(!string.IsNullOrWhiteSpace(Model.ImagenUrl))
+    {
+        <img src="@Model.ImagenUrl" alt="@Model.Titulo" loading="lazy" decoding="async" />}<p>@Model.Descripcion</p>
+    </div>

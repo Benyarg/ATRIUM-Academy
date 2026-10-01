@@ -1,0 +1,34 @@
+@model ATRIUM.Domain.Models.Certificado
+@{ ViewData["Title"]="Nuevo certificado"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Academia</span>
+        <h1>Nuevo certificado</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <form asp-action="Create" method="post">
+        <div class="v-form-grid">
+            <div class="v-field">
+                <label class="v-label" asp-for="IdCurso">Curso</label>
+                <select class="v-select" asp-for="IdCurso" asp-items="ViewBag.IdCurso">
+                </select>
+            </div>
+            <div class="v-field">
+                <label class="v-label" asp-for="IdUsuario">Usuario</label>
+                <select class="v-select" asp-for="IdUsuario" asp-items="ViewBag.IdUsuario">
+                </select>
+            </div>
+            <div class="v-field">
+                <label class="v-label" asp-for="FechaEmision">
+                </label>
+                <input class="v-input" asp-for="FechaEmision" type="date"/>
+            </div>
+            <div class="v-field">
+                <label class="v-label" asp-for="CodigoUnico">Código (opcional)</label>
+                <input class="v-input" asp-for="CodigoUnico"/>
+            </div>
+        </div>
+        <button class="v-btn v-btn-primary" type="submit">Crear</button>
+    </form>
+</div>

@@ -1,0 +1,37 @@
+@model IEnumerable<ATRIUM.Domain.Models.Certificado>
+@if(!Model.Any())
+{
+    <div class="v-empty">No hay certificados disponibles.</div>
+}
+else
+{
+    <div class="v-table-wrap">
+        <table class="v-table">
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Estudiante</th>
+                    <th>Emisión</th>
+                    <th>Código</th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var c in Model)
+                {
+                    <tr>
+                        <td>@c.Curso?.Nombre</td>
+                        <td>@c.Usuario?.Nombre @c.Usuario?.Apellido</td>
+                        <td>@c.FechaEmision.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <code>@c.CodigoUnico</code>
+                        </td>
+                        <td>
+                            <a class="v-btn" asp-action="Details" asp-route-id="@c.IdCertificado">Ver</a>
+                        </td>
+                    </tr>
+                    }</tbody>
+                </table>
+            </div>
+        }

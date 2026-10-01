@@ -1,0 +1,107 @@
+@model ATRIUM.Domain.Models.Curso
+@{
+    ViewData["Title"] = Model.Nombre;
+    bool tieneAcceso = ViewBag.TieneAcceso is true;
+}
+
+<section class="v-section">
+    <div class="v-container">
+        <div class="course-detail">
+            <div>
+                <span class="eyebrow">@(Model.Categoria?.Nombre ?? "ATRIUM Academy")</span>
+                <h1 class="display-v">@Model.Nombre</h1>
+                <p class="lead-v">@Model.Descripcion</p>
+                <div class="v-actions">
+                    @if (tieneAcceso)
+                    {
+                        <a class="v-btn v-btn-primary v-btn-lg" href="#contenido">Continuar curso →</a>
+                    }
+                    else if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="v-btn v-btn-primary v-btn-lg" asp-controller="Tienda" asp-action="FinalizarPedido" asp-route-idCurso="@Model.IdCurso">Comprar por S/ @Model.PrecioFinal.ToString("0.00")</a>
+                        <form asp-controller="CarroCompras" asp-action="Agregar" method="post">
+                            <input type="hidden" name="idCurso" value="@Model.IdCurso" />
+                            <button class="v-btn v-btn-lg" type="submit">Agregar al carrito</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="v-btn v-btn-primary v-btn-lg" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Curso", new { id = Model.IdCurso })">Inicia sesión para comprar</a>
+                    }
+                </div>
+            </div>
+            <aside>
+                @if (!string.IsNullOrWhiteSpace(Model.URLImagen))
+                {
+                    <img class="course-cover" src="@Model.URLImagen" alt="@Model.Nombre" />
+                }
+                <div class="surface-panel detail-aside">
+                    <span class="eyebrow">Ficha del curso</span>
+                    <h3>@(string.IsNullOrWhiteSpace(Model.DocenteAsignado) ? "Equipo ATRIUM" : Model.DocenteAsignado)</h3>
+                    <div class="data-pair"><span>Módulos</span><strong>@Model.Modulos.Count</strong></div>
+                    <div class="data-pair"><span>Contenidos</span><strong>@Model.Modulos.Sum(m => m.Contenidos.Count)</strong></div>
+                    <div class="data-pair"><span>Precio</span><strong>S/ @Model.PrecioFinal.ToString("0.00")</strong></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+
+<section id="contenido" class="v-section">
+    <div class="v-container">
+        <div class="page-head">
+            <div><span class="eyebrow">Programa</span><h2>Contenido del curso</h2><p class="text-muted-v">Una secuencia organizada para avanzar con claridad.</p></div>
+        </div>
+        @if (!Model.Modulos.Any())
+        {
+            <div class="v-empty">El contenido de este curso se está preparando.</div>
+        }
+        else
+        {
+            <div class="curriculum">
+                @foreach (var modulo in Model.Modulos.OrderBy(m => m.Orden))
+                {
+                    <article class="module-card">
+                        <header class="module-head">
+                            <span class="eyebrow">Módulo @modulo.Orden</span>
+                            <h3>@modulo.Titulo</h3>
+                            <p class="text-muted-v">@modulo.Descripcion</p>
+                        </header>
+                        @if (tieneAcceso)
+                        {
+                            <div class="content-list">
+                                @foreach (var contenido in modulo.Contenidos.OrderBy(c => c.Orden))
+                                {
+                                    <div class="content-row">
+                                        <div><strong>@contenido.Titulo</strong><div class="text-muted-v">@contenido.Tipo</div></div>
+                                        <div class="v-actions">
+                                            @if (HttpUrlRules.IsSafe(contenido.URLContenido))
+                                            {
+                                                <a class="v-btn v-btn-sm" href="@contenido.URLContenido" target="_blank" rel="noopener noreferrer">Abrir ↗</a>
+                                            }
+                                            <form asp-controller="ProgresoEstudiante" asp-action="Marcar" method="post">
+                                                <input type="hidden" name="idContenido" value="@contenido.IdContenido" />
+                                                <button class="v-btn v-btn-sm" type="submit">Completar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="v-card-body text-muted-v">Adquiere el curso para acceder a las lecciones.</div>
+                        }
+                    </article>
+                }
+            </div>
+        }
+        @if (tieneAcceso)
+        {
+            <form asp-controller="Certificado" asp-action="Generar" method="post" class="v-actions">
+                <input type="hidden" name="idCurso" value="@Model.IdCurso" />
+                <button class="v-btn v-btn-primary" type="submit">Generar certificado al completar</button>
+            </form>
+        }
+    </div>
+</section>

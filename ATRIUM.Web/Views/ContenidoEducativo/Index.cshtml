@@ -1,0 +1,57 @@
+@model IEnumerable<ATRIUM.Domain.Models.ContenidoEducativo>
+@{
+    ViewData["Title"] = "Recursos";
+    Layout = User.IsInRole(AppRoles.Administrator) ? "_AdminLayout" : "_Layout";
+}
+
+@if (User.IsInRole(AppRoles.Administrator))
+{
+    <div class="page-head">
+        <div><span class="eyebrow">Biblioteca</span><h1>Recursos</h1><p class="text-muted-v">Material complementario disponible dentro de ATRIUM Academy.</p></div>
+        <a class="v-btn v-btn-primary" asp-action="Create">Nuevo recurso</a>
+    </div>
+}
+else
+{
+    <section class="student-intro">
+        <div class="v-container">
+            <div class="page-head">
+                <div><span class="eyebrow">Biblioteca ATRIUM</span><h1>Recursos</h1><p class="lead-v">Material complementario para profundizar tu proceso de aprendizaje.</p></div>
+                <a class="v-btn" asp-controller="Curso" asp-action="MisCursos">Mis cursos</a>
+            </div>
+        </div>
+    </section>
+}
+
+<section class="@(User.IsInRole(AppRoles.Administrator) ? "" : "v-section v-section-compact")">
+    <div class="@(User.IsInRole(AppRoles.Administrator) ? "" : "v-container")">
+        @if (!Model.Any())
+        {
+            <div class="v-empty">Aún no hay recursos publicados.</div>
+        }
+        else
+        {
+            <div class="resource-grid">
+                @foreach (var r in Model)
+                {
+                    <article class="resource-card">
+                        <span class="eyebrow">@(r.Curso?.Nombre ?? "Recurso ATRIUM")</span>
+                        <h3>@r.Titulo</h3>
+                        <p>@r.Descripcion</p>
+                        <div class="v-actions">
+                            <a class="v-btn" asp-action="Details" asp-route-id="@r.ContenidoId">Ver detalle</a>
+                            @if (HttpUrlRules.IsSafe(r.UrlContenido))
+                            {
+                                <a class="v-btn v-btn-primary" href="@r.UrlContenido" target="_blank" rel="noopener noreferrer">Abrir recurso ↗</a>
+                            }
+                            @if (User.IsInRole(AppRoles.Administrator))
+                            {
+                                <a class="v-btn" asp-action="Edit" asp-route-id="@r.ContenidoId">Editar</a>
+                            }
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>

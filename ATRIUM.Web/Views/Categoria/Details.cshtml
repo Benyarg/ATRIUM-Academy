@@ -1,0 +1,16 @@
+@model ATRIUM.Domain.Models.Categoria
+@{ ViewData["Title"]="Detalle categoría"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Categoría</span>
+        <h1>@Model.Nombre</h1>
+    </div>
+    <a class="v-btn" asp-action="Index">Volver</a>
+</div>
+<div class="surface-panel">
+    <p>@Model.Descripcion</p>
+    <p>
+        <span class="v-badge @(Model.Estado?"is-success":"is-danger")">@(Model.Estado?"Activa":"Inactiva")</span>
+    </p>
+    <p class="text-muted-v">Cursos asociados: @Model.Cursos.Count</p>
+</div>

@@ -1,0 +1,41 @@
+@model ATRIUM.Web.ViewModels.CursoViewModel
+<div class="v-form-grid">
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="Nombre">
+        </label>
+        <input class="v-input" asp-for="Nombre"/>
+        <span asp-validation-for="Nombre">
+        </span>
+    </div>
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="Descripcion">
+        </label>
+        <textarea class="v-textarea" rows="5" asp-for="Descripcion">
+        </textarea>
+    </div>
+    <div class="v-field">
+        <label class="v-label" asp-for="Precio">
+        </label>
+        <input class="v-input" asp-for="Precio"/>
+    </div>
+    <div class="v-field">
+        <label class="v-label" asp-for="PrecioDescuento">
+        </label>
+        <input class="v-input" asp-for="PrecioDescuento"/>
+    </div>
+    <div class="v-field">
+        <label class="v-label" asp-for="DocenteAsignado">Docente</label>
+        <input class="v-input" asp-for="DocenteAsignado"/>
+    </div>
+    <div class="v-field">
+        <label class="v-label" asp-for="IdCategoria">Categoría</label>
+        <select class="v-select" asp-for="IdCategoria" asp-items="ViewBag.IdCategoria">
+        </select>
+    </div>
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="ImagenArchivo">Imagen del curso</label>
+        <input class="v-input" asp-for="ImagenArchivo" type="file" accept="image/jpeg,image/png,image/webp"/>
+        <span asp-validation-for="ImagenArchivo">
+        </span>
+    </div>
+</div>

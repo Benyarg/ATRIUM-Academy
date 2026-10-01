@@ -1,0 +1,51 @@
+@model IEnumerable<ATRIUM.Domain.Models.CarroCompras>
+@{
+    ViewData["Title"] = "Carrito";
+    var total = Model.Where(x => x.Curso != null).Sum(x => x.Curso!.PrecioFinal * x.Cantidad);
+}
+
+<section class="student-intro">
+    <div class="v-container">
+        <div class="page-head">
+            <div><span class="eyebrow">Compra</span><h1>Tu carrito</h1><p class="lead-v">Revisa los cursos seleccionados antes de crear el pedido.</p></div>
+            <a class="v-btn" asp-controller="Tienda" asp-action="CursosDisponibles">Seguir explorando</a>
+        </div>
+    </div>
+</section>
+
+<section class="v-section v-section-compact">
+    <div class="v-container">
+        @if (!Model.Any())
+        {
+            <div class="v-empty"><span class="eyebrow">Carrito vacío</span><h2>Tu próximo curso puede empezar aquí.</h2><p>Explora el catálogo y agrega los cursos que quieras adquirir.</p><a class="v-btn v-btn-primary" asp-controller="Tienda" asp-action="CursosDisponibles">Explorar catálogo ↗</a></div>
+        }
+        else
+        {
+            <div class="detail-grid">
+                <div class="v-table-wrap">
+                    <table class="v-table">
+                        <thead><tr><th>Curso</th><th>Precio</th><th>Acción</th></tr></thead>
+                        <tbody>
+                        @foreach (var x in Model)
+                        {
+                            <tr>
+                                <td><strong>@x.Curso?.Nombre</strong><div class="text-muted-v">@x.Curso?.Categoria?.Nombre</div></td>
+                                <td>S/ @((x.Curso?.PrecioFinal ?? 0).ToString("0.00"))</td>
+                                <td><form asp-action="Eliminar" method="post"><input type="hidden" name="id" value="@x.IdCarroCompras" /><button class="v-btn v-btn-danger v-btn-sm" type="submit">Quitar</button></form></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                <aside class="surface-panel detail-aside">
+                    <span class="eyebrow">Resumen</span>
+                    <h2>S/ @total.ToString("0.00")</h2>
+                    <div class="data-pair"><span>Cursos</span><strong>@Model.Count()</strong></div>
+                    <div class="data-pair"><span>Estado inicial</span><strong>@OrderStatuses.Pending</strong></div>
+                    <p class="text-muted-v">El acceso se habilita después de validar el pago del pedido.</p>
+                    <form asp-action="Comprar" method="post"><button class="v-btn v-btn-primary v-btn-lg" type="submit">Crear pedido ↗</button></form>
+                </aside>
+            </div>
+        }
+    </div>
+</section>

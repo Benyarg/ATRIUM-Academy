@@ -1,0 +1,54 @@
+@model IEnumerable<ATRIUM.Domain.Models.Curso>
+@{ ViewData["Title"] = "Mis cursos"; }
+
+<section class="student-intro">
+    <div class="v-container">
+        <div class="page-head">
+            <div>
+                <span class="eyebrow">Mi aprendizaje</span>
+                <h1>Mis cursos</h1>
+                <p class="lead-v">Continúa desde los cursos que ya fueron aprobados para tu cuenta.</p>
+            </div>
+            <div class="v-actions">
+                <a class="v-btn" asp-controller="ProgresoEstudiante" asp-action="Index">Ver progreso</a>
+                <a class="v-btn v-btn-primary" asp-controller="Tienda" asp-action="CursosDisponibles">Explorar cursos ↗</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="v-section v-section-compact">
+    <div class="v-container">
+        @if (!Model.Any())
+        {
+            <div class="v-empty">
+                <span class="eyebrow">Aún no hay cursos</span>
+                <h2>Tu espacio de aprendizaje está listo.</h2>
+                <p>Cuando un pedido sea aprobado, el curso aparecerá aquí para que puedas acceder a sus módulos y contenidos.</p>
+                <a class="v-btn v-btn-primary" asp-controller="Tienda" asp-action="CursosDisponibles">Explorar catálogo ↗</a>
+            </div>
+        }
+        else
+        {
+            <div class="learning-grid">
+                @foreach (var curso in Model)
+                {
+                    <article class="learning-card">
+                        @if (!string.IsNullOrWhiteSpace(curso.URLImagen))
+                        {
+                            <img src="@curso.URLImagen" alt="@curso.Nombre" loading="lazy" decoding="async" />
+                        }
+                        <div class="learning-card-body">
+                            <span class="eyebrow">@(curso.Categoria?.Nombre ?? "ATRIUM")</span>
+                            <h3>@curso.Nombre</h3>
+                            <p>@curso.Descripcion</p>
+                            <div class="learning-card-actions">
+                                <a class="v-btn v-btn-primary" asp-action="Details" asp-route-id="@curso.IdCurso">Continuar curso ↗</a>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>

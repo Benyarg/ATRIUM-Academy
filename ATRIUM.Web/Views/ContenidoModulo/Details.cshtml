@@ -1,0 +1,19 @@
+@model ATRIUM.Domain.Models.ContenidoModulo
+@{ ViewData["Title"]="Detalle lección"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">@Model.ModuloCurso?.Curso?.Nombre · @Model.ModuloCurso?.Titulo</span>
+        <h1>@Model.Titulo</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <p>
+        <span class="v-badge">@Model.Tipo</span>
+    </p>
+    @if (HttpUrlRules.IsSafe(Model.URLContenido))
+    {
+        <p>
+            <a class="v-btn" href="@Model.URLContenido" target="_blank" rel="noopener noreferrer">Abrir recurso</a>
+        </p>
+    }
+</div>

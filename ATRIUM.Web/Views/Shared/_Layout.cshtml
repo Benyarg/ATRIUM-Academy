@@ -1,0 +1,671 @@
+@using ATRIUM.Domain.Constants
+
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var isAdmin = User.IsInRole(AppRoles.Administrator);
+    var isStudent = User.IsInRole(AppRoles.Student);
+
+    var currentController =
+        ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+
+    var currentAction =
+        ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+
+    string Active(string controller, params string[] actions)
+    {
+        if (!string.Equals(
+                currentController,
+                controller,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Empty;
+        }
+
+        if (actions.Length == 0 ||
+            actions.Any(action =>
+                string.Equals(
+                    currentAction,
+                    action,
+                    StringComparison.OrdinalIgnoreCase)))
+        {
+            return "is-active";
+        }
+
+        return string.Empty;
+    }
+
+    string ActiveCatalog()
+    {
+        var tiendaActive =
+            string.Equals(currentController, "Tienda", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(currentAction, "CursosDisponibles", StringComparison.OrdinalIgnoreCase);
+
+        var cursoActive =
+            string.Equals(currentController, "Curso", StringComparison.OrdinalIgnoreCase) &&
+            (
+                string.Equals(currentAction, "Details", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(currentAction, "Buscar", StringComparison.OrdinalIgnoreCase)
+            );
+
+        return tiendaActive || cursoActive
+            ? "is-active"
+            : string.Empty;
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1" />
+
+    <meta
+        name="theme-color"
+        content="#060607" />
+
+    <title>@ViewData["Title"] - ATRIUM Academy</title>
+
+    <meta
+        name="description"
+        content="ATRIUM Academy: Arquitectura · Diseño · Formación. Cursos, recursos y aprendizaje aplicado para arquitectura y representación digital." />
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com" />
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="~/img/ATRIUM-FAVICON.png"
+        asp-append-version="true" />
+
+    <link
+        rel="stylesheet"
+        href="~/css/base/variables.css"
+        asp-append-version="true" />
+
+    <link
+        rel="stylesheet"
+        href="~/css/base/typography.css"
+        asp-append-version="true" />
+
+    <link
+        rel="stylesheet"
+        href="~/css/components/components.css"
+        asp-append-version="true" />
+
+    <link
+        rel="stylesheet"
+        href="~/css/layouts/site.css"
+        asp-append-version="true" />
+
+    <link
+        rel="stylesheet"
+        href="~/css/pages/home.css"
+        asp-append-version="true" />
+
+    <link
+        rel="stylesheet"
+        href="~/css/pages/catalog.css"
+        asp-append-version="true" />
+
+    <link
+        rel="stylesheet"
+        href="~/css/pages/app.css"
+        asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body class="@(isAuthenticated ? "is-authenticated" : "is-visitor")">
+
+    <header class="site-header">
+
+        <nav
+            class="site-nav v-container"
+            aria-label="Navegación principal">
+
+            <!-- LOGO -->
+            <a
+                class="site-logo brand-lockup"
+                asp-controller="Home"
+                asp-action="Index"
+                aria-label="ATRIUM Academy - Inicio">
+
+                <img
+                    class="brand-mark"
+                    src="~/img/ATRIUM-MARK.webp"
+                    alt=""
+                    aria-hidden="true" />
+
+                <span class="brand-type">
+                    <strong>ATRIUM</strong>
+                    <span>Academy</span>
+                </span>
+
+            </a>
+
+            <!-- NAVEGACIÓN -->
+            <ul
+                class="site-menu"
+                id="main-navigation"
+                data-nav-menu>
+
+                @if (!isAuthenticated)
+                {
+                    <li>
+                        <a
+                            class="@Active("Home", "Index")"
+                            asp-controller="Home"
+                            asp-action="Index">
+                            Inicio
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("Home", "Nosotros")"
+                            asp-controller="Home"
+                            asp-action="Nosotros">
+                            Nosotros
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@ActiveCatalog()"
+                            asp-controller="Tienda"
+                            asp-action="CursosDisponibles">
+                            Cursos
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("Home", "FAQ")"
+                            asp-controller="Home"
+                            asp-action="FAQ">
+                            FAQ
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("Home", "Contacto")"
+                            asp-controller="Home"
+                            asp-action="Contacto">
+                            Contacto
+                        </a>
+                    </li>
+                }
+
+                else if (isStudent)
+                {
+                    <li>
+                        <a
+                            class="@Active("Home", "Index")"
+                            asp-controller="Home"
+                            asp-action="Index">
+                            Inicio
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("Curso", "MisCursos")"
+                            asp-controller="Curso"
+                            asp-action="MisCursos">
+                            Mis cursos
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@ActiveCatalog()"
+                            asp-controller="Tienda"
+                            asp-action="CursosDisponibles">
+                            Explorar
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("ContenidoEducativo")"
+                            asp-controller="ContenidoEducativo"
+                            asp-action="Index">
+                            Recursos
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("ProgresoEstudiante")"
+                            asp-controller="ProgresoEstudiante"
+                            asp-action="Index">
+                            Progreso
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("Pedido", "MisPedidos", "Details")"
+                            asp-controller="Pedido"
+                            asp-action="MisPedidos">
+                            Pedidos
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("Certificado", "Index", "Details")"
+                            asp-controller="Certificado"
+                            asp-action="Index">
+                            Certificados
+                        </a>
+                    </li>
+                }
+
+                else if (isAdmin)
+                {
+                    <li>
+                        <a
+                            class="@Active("Home", "Index")"
+                            asp-controller="Home"
+                            asp-action="Index">
+                            Inicio
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@ActiveCatalog()"
+                            asp-controller="Tienda"
+                            asp-action="CursosDisponibles">
+                            Cursos
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="@Active("ContenidoEducativo")"
+                            asp-controller="ContenidoEducativo"
+                            asp-action="Index">
+                            Recursos
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="site-menu-admin @Active("Admin", "Index")"
+                            asp-controller="Admin"
+                            asp-action="Index">
+                            Panel administrativo
+                            <span aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                }
+
+            </ul>
+
+            <!-- ACCIONES -->
+            <div class="site-actions">
+
+                <partial name="_LoginPartial" />
+
+                <button
+                    class="nav-toggle"
+                    type="button"
+                    data-nav-toggle
+                    aria-label="Abrir navegación"
+                    aria-controls="main-navigation"
+                    aria-expanded="false">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </button>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <main>
+
+        <div class="v-container site-alerts">
+
+            @if (TempData["SuccessMessage"] is string success)
+            {
+                <div
+                    class="alert-v alert-v-success"
+                    role="status">
+                    @success
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] is string error)
+            {
+                <div
+                    class="alert-v alert-v-danger"
+                    role="alert">
+                    @error
+                </div>
+            }
+
+            @if (TempData["InfoMessage"] is string info)
+            {
+                <div
+                    class="alert-v alert-v-info"
+                    role="status">
+                    @info
+                </div>
+            }
+
+        </div>
+
+        @RenderBody()
+
+    </main>
+
+    <footer class="site-footer">
+
+        <div class="v-container">
+
+            <div class="footer-grid">
+
+                <div class="footer-brand">
+
+                    <a
+                        class="brand-lockup brand-lockup-lg"
+                        asp-controller="Home"
+                        asp-action="Index">
+
+                        <img
+                            class="brand-mark"
+                            src="~/img/ATRIUM-MARK.webp"
+                            alt=""
+                            aria-hidden="true" />
+
+                        <span class="brand-type">
+                            <strong>ATRIUM</strong>
+                            <span>Academy</span>
+                        </span>
+
+                    </a>
+
+                    <p>
+                        Arquitectura · Diseño · Formación.
+                        Una experiencia de aprendizaje para desarrollar
+                        herramientas, criterio y procesos aplicados al proyecto.
+                    </p>
+
+                </div>
+
+                @if (!isAuthenticated)
+                {
+                    <div>
+
+                        <span class="eyebrow">
+                            Explorar
+                        </span>
+
+                        <ul class="footer-links">
+
+                            <li>
+                                <a
+                                    asp-controller="Tienda"
+                                    asp-action="CursosDisponibles">
+                                    Cursos
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Home"
+                                    asp-action="Nosotros">
+                                    Nosotros
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Certificado"
+                                    asp-action="Validar">
+                                    Validar certificado
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <div>
+
+                        <span class="eyebrow">
+                            Ayuda
+                        </span>
+
+                        <ul class="footer-links">
+
+                            <li>
+                                <a
+                                    asp-controller="Home"
+                                    asp-action="FAQ">
+                                    Preguntas frecuentes
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Home"
+                                    asp-action="Contacto">
+                                    Contacto
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Account"
+                                    asp-action="Login">
+                                    Iniciar sesión
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                }
+
+                else if (isStudent)
+                {
+                    <div>
+
+                        <span class="eyebrow">
+                            Mi aprendizaje
+                        </span>
+
+                        <ul class="footer-links">
+
+                            <li>
+                                <a
+                                    asp-controller="Curso"
+                                    asp-action="MisCursos">
+                                    Mis cursos
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="ContenidoEducativo"
+                                    asp-action="Index">
+                                    Recursos
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="ProgresoEstudiante"
+                                    asp-action="Index">
+                                    Mi progreso
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <div>
+
+                        <span class="eyebrow">
+                            Mi cuenta
+                        </span>
+
+                        <ul class="footer-links">
+
+                            <li>
+                                <a
+                                    asp-controller="Pedido"
+                                    asp-action="MisPedidos">
+                                    Pedidos
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Certificado"
+                                    asp-action="Index">
+                                    Certificados
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Home"
+                                    asp-action="Contacto">
+                                    Soporte
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                }
+
+                else if (isAdmin)
+                {
+                    <div>
+
+                        <span class="eyebrow">
+                            Administración
+                        </span>
+
+                        <ul class="footer-links">
+
+                            <li>
+                                <a
+                                    asp-controller="Admin"
+                                    asp-action="Index">
+                                    Dashboard
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Curso"
+                                    asp-action="Index">
+                                    Gestionar cursos
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Pedido"
+                                    asp-action="Index">
+                                    Gestionar pedidos
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <div>
+
+                        <span class="eyebrow">
+                            Sitio
+                        </span>
+
+                        <ul class="footer-links">
+
+                            <li>
+                                <a
+                                    asp-controller="Home"
+                                    asp-action="Index">
+                                    Ver inicio
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Tienda"
+                                    asp-action="CursosDisponibles">
+                                    Ver catálogo
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    asp-controller="Home"
+                                    asp-action="Contacto">
+                                    Contacto
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                }
+
+            </div>
+
+            <div class="footer-bottom">
+
+                <span>
+                    © @DateTime.Now.Year ATRIUM Academy ·
+                    Arquitectura · Diseño · Formación.
+                </span>
+
+                <span class="footer-signature">
+                    Diseña · Aprende · Construye
+                </span>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <script
+        src="~/js/site.js"
+        asp-append-version="true">
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

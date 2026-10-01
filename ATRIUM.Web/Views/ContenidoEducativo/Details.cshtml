@@ -1,0 +1,21 @@
+@model ATRIUM.Domain.Models.ContenidoEducativo
+
+@{
+    ViewData["Title"] = Model.Titulo;
+    var hasSafeUrl = HttpUrlRules.IsSafe(Model.UrlContenido);
+}
+
+<section class="v-section">
+    <div class="v-container">
+        <span class="eyebrow">@Model.Curso?.Nombre</span>
+        <h1>@Model.Titulo</h1>
+        <p class="lead-v">@Model.Descripcion</p>
+
+        @if (hasSafeUrl)
+        {
+            <a class="v-btn v-btn-primary" href="@Model.UrlContenido" target="_blank" rel="noopener noreferrer">
+                Abrir recurso →
+            </a>
+        }
+    </div>
+</section>

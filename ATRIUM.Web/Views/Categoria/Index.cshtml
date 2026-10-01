@@ -1,0 +1,41 @@
+@model IEnumerable<ATRIUM.Domain.Models.Categoria>
+@{ ViewData["Title"]="Categorías"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Academia</span>
+        <h1>Categorías</h1>
+    </div>
+    <a class="v-btn v-btn-primary" asp-action="Create">Nueva categoría</a>
+</div>
+<div class="v-table-wrap">
+    <table class="v-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var x in Model)
+            {
+                <tr>
+                    <td>
+                        <strong>@x.Nombre</strong>
+                    </td>
+                    <td>@x.Descripcion</td>
+                    <td>
+                        <span class="v-badge @(x.Estado?"is-success":"is-danger")">@(x.Estado?"Activa":"Inactiva")</span>
+                    </td>
+                    <td>
+                        <div class="v-actions">
+                            <a class="v-btn" asp-action="Edit" asp-route-id="@x.Id">Editar</a>
+                            <a class="v-btn" asp-action="Details" asp-route-id="@x.Id">Ver</a>
+                            <a class="v-btn v-btn-danger" asp-action="Delete" asp-route-id="@x.Id">Eliminar</a>
+                        </div>
+                    </td>
+                </tr>
+                }</tbody>
+            </table>
+        </div>

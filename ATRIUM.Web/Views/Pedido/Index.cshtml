@@ -1,0 +1,71 @@
+@model IEnumerable<ATRIUM.Domain.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Pedidos";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Ventas</span>
+        <h1>Pedidos</h1>
+    </div>
+
+    <div class="v-actions">
+        <a class="v-btn" asp-action="Index">Todos</a>
+        <a class="v-btn" asp-action="Index" asp-route-estado="@OrderStatuses.Pending">Pendientes</a>
+        <a class="v-btn" asp-action="Index" asp-route-estado="@OrderStatuses.Approved">Aprobados</a>
+    </div>
+</div>
+
+<div class="v-table-wrap">
+    <table class="v-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                var statusClass = order.EstadoPedido switch
+                {
+                    OrderStatuses.Approved => "is-success",
+                    OrderStatuses.Rejected => "is-danger",
+                    _ => "is-warning"
+                };
+
+                <tr>
+                    <td>#@order.IdPedido</td>
+                    <td>
+                        @order.Usuario?.Nombre @order.Usuario?.Apellido<br />
+                        <span class="text-muted-v">@order.Usuario?.Email</span>
+                    </td>
+                    <td>@order.FechaPedido.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>S/ @order.TotalPedido.ToString("0.00")</td>
+                    <td><span class="v-badge @statusClass">@order.EstadoPedido</span></td>
+                    <td>
+                        <div class="v-actions">
+                            <a class="v-btn" asp-action="Details" asp-route-id="@order.IdPedido">Ver</a>
+
+                            <form asp-action="CambiarEstado" method="post">
+                                <input type="hidden" name="id" value="@order.IdPedido" />
+                                <select class="v-select" name="nuevoEstado" aria-label="Estado del pedido @order.IdPedido">
+                                    <option value="@OrderStatuses.Pending" selected="@(order.EstadoPedido == OrderStatuses.Pending ? "selected" : null)">@OrderStatuses.Pending</option>
+                                    <option value="@OrderStatuses.Approved" selected="@(order.EstadoPedido == OrderStatuses.Approved ? "selected" : null)">@OrderStatuses.Approved</option>
+                                    <option value="@OrderStatuses.Rejected" selected="@(order.EstadoPedido == OrderStatuses.Rejected ? "selected" : null)">@OrderStatuses.Rejected</option>
+                                </select>
+                                <button class="v-btn" type="submit">Actualizar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

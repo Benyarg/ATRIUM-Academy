@@ -1,0 +1,318 @@
+/* ATRIUM Academy — catalog + course detail */ .catalog-hero {
+    padding:132px 0 70px;
+    border-bottom:1px solid var(--v-line);
+    background:radial-gradient(circle at 78% 16%,rgba(255,255,255,.055),transparent 25%),#080809;
+    position:relative;
+    overflow:hidden
+}
+
+.catalog-hero:after {
+    content:"A";
+    position:absolute;
+    right:-1%;
+    bottom:-36%;
+    font-family:"Space Grotesk";
+    font-size:28rem;
+    font-weight:400;
+    color:rgba(255,255,255,.018);
+    line-height:1
+}
+
+.catalog-hero-grid {
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns:minmax(0,1.35fr) minmax(280px,.55fr);
+    gap:70px;
+    align-items:end
+}
+
+.catalog-hero h1 {
+    font-size:clamp(3.7rem,7vw,7.2rem);
+    line-height:.89;
+    letter-spacing:-.075em;
+    margin:22px 0 0;
+    font-weight:500
+}
+
+.catalog-hero h1 em {
+    font-style:normal;
+    color:#85868a
+}
+
+.catalog-hero-copy {
+    border-left:1px solid #37383b;
+    padding-left:26px
+}
+
+.catalog-hero-copy p {
+    margin:0;
+    color:#b5b6ba;
+    line-height:1.8
+}
+
+.catalog-controls-section {
+    padding:30px 0 0;
+    background:#080809
+}
+
+.catalog-filter {
+    display:grid;
+    grid-template-columns:minmax(260px,1fr) minmax(210px,.32fr) auto auto;
+    gap:10px;
+    align-items:center
+}
+
+.catalog-search-field {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#111214;
+    border:1px solid var(--v-line);
+    border-radius:10px;
+    padding:0 14px
+}
+
+.catalog-search-field span {
+    color:#747579
+}
+
+.catalog-search-field input {
+    width:100%;
+    min-height:48px;
+    background:transparent;
+    border:0;
+    outline:0;
+    color:#fff
+}
+
+.catalog-filter select {
+    min-height:48px;
+    border:1px solid var(--v-line);
+    border-radius:10px;
+    padding:0 14px;
+    background:#111214;
+    color:#fff;
+    outline:0
+}
+
+.catalog-filter select option {
+    background:#151517
+}
+
+.catalog-result-meta {
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:20px 2px 0;
+    color:#747579;
+    font-size:.65rem;
+    text-transform:uppercase;
+    letter-spacing:.11em
+}
+
+.catalog-results-section {
+    padding-top:50px
+}
+
+.catalog-card-actions {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap
+}
+
+.catalog-card-actions form {
+    margin:0
+}
+
+.catalog-empty {
+    padding:90px 24px;
+    text-align:center;
+    border-top:1px solid var(--v-line);
+    border-bottom:1px solid var(--v-line)
+}
+
+.catalog-empty h2 {
+    font-size:clamp(2rem,4vw,3.5rem);
+    margin:14px 0;
+    font-weight:500
+}
+
+.catalog-empty p {
+    color:var(--v-muted);
+    margin-bottom:25px
+}
+
+.catalog-account-cta {
+    padding:86px 0;
+    background:#efeee8;
+    color:#090909
+}
+
+.catalog-account-inner {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(300px,.55fr);
+    gap:60px;
+    align-items:end
+}
+
+.catalog-account-inner h2 {
+    color:#090909;
+    font-size:clamp(2.5rem,4.8vw,5.2rem);
+    line-height:.94;
+    margin:14px 0 0;
+    font-weight:500
+}
+
+.catalog-account-inner p {
+    color:#4c4d50;
+    line-height:1.75
+}
+
+.catalog-account-inner .eyebrow {
+    color:#707176
+}
+
+.catalog-account-inner .v-btn-primary {
+    background:#090909;
+    color:#fff;
+    border-color:#090909
+}
+
+.catalog-account-inner .v-btn:not(.v-btn-primary) {
+    background:transparent;
+    color:#090909;
+    border-color:#b7b8b4
+}
+
+.catalog-head {
+    padding:72px 0 34px
+}
+
+.filter-bar {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin:26px 0
+}
+
+.filter-bar .v-input {
+    max-width:420px
+}
+
+.course-detail {
+    display:grid;
+    grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);
+    gap:28px;
+    align-items:start
+}
+
+.course-cover {
+    aspect-ratio:16/10;
+    object-fit:cover;
+    width:100%;
+    border-radius:14px;
+    border:1px solid var(--v-line);
+    filter:saturate(.62)
+}
+
+.curriculum {
+    display:grid;
+    gap:12px;
+    margin-top:24px
+}
+
+.module-card {
+    border:1px solid var(--v-line);
+    border-radius:14px;
+    background:#101113;
+    overflow:hidden
+}
+
+.module-head {
+    padding:20px 22px;
+    border-bottom:1px solid var(--v-line);
+    background:#121316
+}
+
+.module-head h3 {
+    font-size:1.35rem;
+    margin:7px 0 4px;
+    font-weight:500
+}
+
+.content-list {
+    padding:8px
+}
+
+.content-row {
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    align-items:center;
+    padding:13px 12px;
+    border-radius:8px
+}
+
+.content-row:hover {
+    background:#151619
+}
+
+.content-row strong {
+    font-size:.9rem
+}
+
+.content-row .text-muted-v {
+    font-size:.75rem
+}
+
+.course-detail>aside {
+    display:grid;
+    gap:14px
+}
+
+.course-detail>aside .surface-panel {
+    margin-top:0
+}
+
+@media(max-width:900px) {
+    .catalog-hero-grid,.catalog-account-inner {
+        grid-template-columns:1fr
+    }
+    .catalog-filter {
+        grid-template-columns:1fr 1fr
+    }
+    .catalog-filter .catalog-search-field {
+        grid-column:1/-1
+    }
+    .course-detail {
+        grid-template-columns:1fr
+    }
+}
+
+@media(max-width:620px) {
+    .catalog-hero {
+        padding-top:105px
+    }
+    .catalog-hero h1 {
+        font-size:clamp(3rem,15vw,5rem)
+    }
+    .catalog-filter {
+        grid-template-columns:1fr
+    }
+    .catalog-filter .catalog-search-field {
+        grid-column:auto
+    }
+    .catalog-result-meta {
+        align-items:flex-start;
+        flex-direction:column
+    }
+    .catalog-account-cta {
+        padding:65px 0
+    }
+    .content-row {
+        align-items:flex-start;
+        flex-direction:column
+    }
+}

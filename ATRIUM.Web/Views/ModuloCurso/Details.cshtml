@@ -1,0 +1,12 @@
+@model ATRIUM.Domain.Models.ModuloCurso
+@{ ViewData["Title"]="Detalle módulo"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">@Model.Curso?.Nombre</span>
+        <h1>@Model.Titulo</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <p>@Model.Descripcion</p>
+    <p class="text-muted-v">Orden @Model.Orden · @Model.Contenidos.Count contenido(s)</p>
+</div>

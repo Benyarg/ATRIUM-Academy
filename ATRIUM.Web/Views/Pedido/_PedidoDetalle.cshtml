@@ -1,0 +1,28 @@
+@model ATRIUM.Domain.Models.Pedido
+<div class="surface-panel">
+    <p>
+        <span class="v-badge @(Model.EstadoPedido=="Aprobado"?"is-success":Model.EstadoPedido=="Rechazado"?"is-danger":"is-warning")">@Model.EstadoPedido</span>
+    </p>
+    <h3>S/ @Model.TotalPedido.ToString("0.00")</h3>
+    <p class="text-muted-v">@Model.FechaPedido.ToLocalTime().ToString("dd/MM/yyyy HH:mm") · @Model.FormaPago</p>
+    <div class="v-table-wrap">
+        <table class="v-table">
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var d in Model.Detalles)
+                {
+                    <tr>
+                        <td>@d.Curso?.Nombre</td>
+                        <td>@d.Cantidad</td>
+                        <td>S/ @d.PrecioIndividual.ToString("0.00")</td>
+                    </tr>
+                    }</tbody>
+                </table>
+            </div>
+        </div>

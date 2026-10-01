@@ -1,0 +1,26 @@
+@model IEnumerable<ATRIUM.Domain.Models.Carousel>
+@{ ViewData["Title"]="Portada"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Sitio público</span>
+        <h1>Portada</h1>
+    </div>
+    <a class="v-btn v-btn-primary" asp-action="Create">Nuevo banner</a>
+</div>
+<div class="course-grid">
+    @foreach(var x in Model)
+    {
+        <article class="v-card">
+            @if(!string.IsNullOrWhiteSpace(x.ImagenUrl))
+            {
+                <img src="@x.ImagenUrl" alt="@x.Titulo" loading="lazy" decoding="async" />}<div class="v-card-body">
+                <span class="v-badge @(x.Activo?"is-success":"is-danger")">@(x.Activo?"Activo":"Inactivo")</span>
+                <h3>@x.Titulo</h3>
+                <p class="text-muted-v">@x.Descripcion</p>
+                <div class="v-actions">
+                    <a class="v-btn" asp-action="Edit" asp-route-id="@x.Id">Editar</a>
+                    <a class="v-btn v-btn-danger" asp-action="Delete" asp-route-id="@x.Id">Eliminar</a>
+                </div>
+            </div>
+        </article>
+        }</div>

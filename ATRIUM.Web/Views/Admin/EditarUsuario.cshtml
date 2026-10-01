@@ -1,0 +1,60 @@
+@model ATRIUM.Web.ViewModels.UsuarioAdminViewModel
+@{ ViewData["Title"] = "Editar usuario"; Layout = "_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Cuenta</span>
+        <h1>Editar usuario</h1>
+    </div>
+    <a class="v-btn" asp-action="ListaUsuarios">Volver</a>
+</div>
+<div class="surface-panel">
+    <form asp-action="EditarUsuario" method="post">
+        <input asp-for="Id" type="hidden"/>
+        <div asp-validation-summary="ModelOnly">
+        </div>
+        <div class="v-form-grid">
+            <div class="v-field">
+                <label class="v-label" asp-for="Nombre">
+                </label>
+                <input class="v-input" asp-for="Nombre"/>
+            </div>
+            <div class="v-field">
+                <label class="v-label" asp-for="Apellido">
+                </label>
+                <input class="v-input" asp-for="Apellido"/>
+            </div>
+            <div class="v-field v-form-full">
+                <label class="v-label" asp-for="Email">
+                </label>
+                <input class="v-input" asp-for="Email"/>
+            </div>
+            <div class="v-field v-form-full">
+                <label class="v-label" asp-for="Direccion">
+                </label>
+                <input class="v-input" asp-for="Direccion"/>
+            </div>
+            <div class="v-field">
+                <label class="v-label" asp-for="Telefono">
+                </label>
+                <input class="v-input" asp-for="Telefono"/>
+            </div>
+            <div class="v-field">
+                <label class="v-label" asp-for="FechaDeNacimiento">
+                </label>
+                <input class="v-input" asp-for="FechaDeNacimiento" type="date"/>
+            </div>
+            <div class="v-field v-form-full">
+                <label class="v-label" asp-for="Rol">
+                </label>
+                <select class="v-select" asp-for="Rol">
+                    <option value="@AppRoles.Student">@AppRoles.Student</option>
+                    <option value="@AppRoles.Administrator">@AppRoles.Administrator</option>
+                </select>
+            </div>
+        </div>
+        <button class="v-btn v-btn-primary" type="submit">Guardar cambios</button>
+    </form>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

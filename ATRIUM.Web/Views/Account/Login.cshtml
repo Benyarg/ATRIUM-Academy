@@ -1,0 +1,77 @@
+@model ATRIUM.Web.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#060607" />
+    <title>Iniciar sesión - ATRIUM Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="~/img/ATRIUM-FAVICON.png" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/variables.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base/typography.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/components/components.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/auth.css" asp-append-version="true" />
+</head>
+<body class="auth-body">
+<main class="auth-page">
+    <section class="auth-visual">
+        <a asp-controller="Home" asp-action="Index" aria-label="ATRIUM Academy - Inicio">
+            <img class="auth-visual-logo" src="~/img/ATRIUM-ACADEMY-LOCKUP.webp" alt="ATRIUM Academy" />
+        </a>
+        <div class="auth-copy">
+            <span class="eyebrow">Arquitectura · Diseño · Formación</span>
+            <h2>Diseña.<br />Aprende.<br />Construye.</h2>
+            <p class="lead-v">Una plataforma creada para transformar herramientas y conocimiento técnico en mejores procesos de proyecto.</p>
+        </div>
+    </section>
+
+    <section class="auth-panel">
+        <div class="auth-box">
+            <img class="auth-brand-mobile" src="~/img/ATRIUM-ACADEMY-LOCKUP.webp" alt="ATRIUM Academy" />
+            <a class="auth-back" asp-controller="Home" asp-action="Index">← Volver al inicio</a>
+            <span class="eyebrow">Acceso privado</span>
+            <h1 class="auth-title">Bienvenido de vuelta.</h1>
+            <p class="auth-sub">Continúa tus cursos, recursos, progreso y proyectos desde tu cuenta ATRIUM.</p>
+
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+                <div class="v-field">
+                    <label asp-for="Email" class="v-label">Correo electrónico</label>
+                    <input asp-for="Email" class="v-input" autocomplete="email" placeholder="nombre@correo.com" />
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+
+                <div class="v-field">
+                    <label asp-for="Password" class="v-label">Contraseña</label>
+                    <div class="password-wrap">
+                        <input asp-for="Password" id="loginPassword" class="v-input" type="password" autocomplete="current-password" placeholder="Ingresa tu contraseña" />
+                        <button class="password-toggle" type="button" data-password-toggle="loginPassword" aria-label="Mostrar contraseña">Ver</button>
+                    </div>
+                    <span asp-validation-for="Password" class="field-validation-error"></span>
+                </div>
+
+                <div class="auth-options">
+                    <label><input asp-for="RememberMe" /> Recordarme</label>
+                    <span class="text-muted-v">Acceso seguro</span>
+                </div>
+
+                <button class="v-btn v-btn-primary v-btn-lg" type="submit">Iniciar sesión <span>↗</span></button>
+                <div class="auth-rule"></div>
+                <div class="auth-foot">¿Aún no tienes cuenta? <a asp-action="Register">Crear una cuenta</a></div>
+                <div class="auth-foot auth-descriptor">ATRIUM Academy · Arquitectura · Diseño · Formación</div>
+            </form>
+        </div>
+    </section>
+</main>
+<script src="~/js/auth.js" asp-append-version="true"></script>
+<partial name="_ValidationScriptsPartial" />
+</body>
+</html>

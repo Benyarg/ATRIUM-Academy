@@ -1,0 +1,27 @@
+@model ATRIUM.Domain.Models.ContenidoEducativo
+<div class="v-form-grid">
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="Titulo">
+        </label>
+        <input class="v-input" asp-for="Titulo"/>
+    </div>
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="Descripcion">
+        </label>
+        <textarea class="v-textarea" rows="4" asp-for="Descripcion">
+        </textarea>
+    </div>
+    <div class="v-field v-form-full">
+        <label class="v-label" asp-for="UrlContenido">URL</label>
+        <input class="v-input" asp-for="UrlContenido"/>
+    </div>
+    <div class="v-field">
+        <label class="v-label" asp-for="CursoId">Curso</label>
+        <select class="v-select" asp-for="CursoId" asp-items="ViewBag.CursoId">
+        </select>
+    </div>
+    <div class="v-field">
+        <label>
+            <input asp-for="EsActivo"/> Recurso activo</label>
+        </div>
+    </div>

@@ -1,0 +1,31 @@
+@model ATRIUM.Domain.Models.Certificado
+@{ ViewData["Title"] = "Validar certificado"; }
+<section class="v-section">
+    <div class="v-container detail-grid">
+        <div>
+            <div class="page-head"><div><span class="eyebrow">Verificación pública</span><h1>Validar certificado</h1><p class="lead-v">Comprueba si un certificado fue emitido por ATRIUM Academy.</p></div></div>
+            <div class="surface-panel">
+                <form method="get">
+                    <div class="v-field"><label class="v-label" for="codigo">Código de certificado</label><input class="v-input" id="codigo" name="codigo" value="@Context.Request.Query["codigo"]" placeholder="ATRIUM-..." /></div>
+                    <button class="v-btn v-btn-primary" type="submit">Verificar código</button>
+                </form>
+                @if (ViewBag.BusquedaRealizada is true)
+                {
+                    if (Model is null)
+                    {
+                        <div class="alert-v alert-v-danger">No encontramos un certificado con ese código.</div>
+                    }
+                    else
+                    {
+                        <div class="alert-v alert-v-success">Certificado válido: @Model.Usuario?.Nombre @Model.Usuario?.Apellido · @Model.Curso?.Nombre · @Model.FechaEmision.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                    }
+                }
+            </div>
+        </div>
+        <aside class="surface-panel detail-aside">
+            <span class="eyebrow">ATRIUM Academy</span>
+            <h2>Arquitectura · Diseño · Formación</h2>
+            <p class="text-muted-v">La validación pública permite comprobar la existencia de un certificado sin iniciar sesión.</p>
+        </aside>
+    </div>
+</section>

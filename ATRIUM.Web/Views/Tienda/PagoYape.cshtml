@@ -1,0 +1,15 @@
+@model ATRIUM.Domain.Models.Pedido
+@{ ViewData["Title"] = "Pago con Yape"; }
+<section class="v-section">
+    <div class="v-container detail-grid">
+        <div class="surface-panel">
+            <span class="eyebrow">Pago / Yape</span>
+            <h1>Completa el pago de tu pedido.</h1>
+            <p class="lead-v">Pedido #@Model.IdPedido · S/ @Model.TotalPedido.ToString("0.00")</p>
+            <p class="text-muted-v">Escanea el QR y conserva tu comprobante. El acceso se activa cuando la administración aprueba el pedido.</p>
+            <div class="data-pair"><span>Pedido</span><strong>#@Model.IdPedido</strong></div>
+            <div class="data-pair"><span>Total</span><strong>S/ @Model.TotalPedido.ToString("0.00")</strong></div>
+        </div>
+        <aside class="v-card detail-aside"><div class="v-card-body"><img src="~/QR.jpeg" alt="Código QR de pago ATRIUM Academy" /></div></aside>
+    </div>
+</section>

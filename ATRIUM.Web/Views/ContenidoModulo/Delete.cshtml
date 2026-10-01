@@ -1,0 +1,14 @@
+@model ATRIUM.Domain.Models.ContenidoModulo
+@{ ViewData["Title"]="Eliminar lección"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Confirmación</span>
+        <h1>Eliminar @Model.Titulo</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <form asp-action="Delete" asp-route-id="@Model.IdContenido" method="post">
+        <button class="v-btn v-btn-danger" type="submit" data-confirm="¿Eliminar esta lección?">Eliminar</button>
+        <a class="v-btn" asp-action="Index">Cancelar</a>
+    </form>
+</div>

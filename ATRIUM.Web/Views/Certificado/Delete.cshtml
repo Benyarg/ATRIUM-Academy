@@ -1,0 +1,14 @@
+@model ATRIUM.Domain.Models.Certificado
+@{ ViewData["Title"]="Eliminar certificado"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Confirmación</span>
+        <h1>Eliminar certificado</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <p>@Model.CodigoUnico</p>
+    <form asp-action="Delete" asp-route-id="@Model.IdCertificado" method="post">
+        <button class="v-btn v-btn-danger" data-confirm="¿Eliminar este certificado?" type="submit">Eliminar</button>
+    </form>
+</div>

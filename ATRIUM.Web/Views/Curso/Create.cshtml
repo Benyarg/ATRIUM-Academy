@@ -1,0 +1,30 @@
+@model ATRIUM.Web.ViewModels.CursoViewModel
+
+@{
+    ViewData["Title"] = "Nuevo curso";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Academia</span>
+        <h1>Nuevo curso</h1>
+    </div>
+    <a class="v-btn" asp-action="Index">Volver</a>
+</div>
+
+<div class="surface-panel">
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly"></div>
+
+        <partial name="_CursoForm" model="Model" />
+
+        <button class="v-btn v-btn-primary" type="submit">
+            Crear curso
+        </button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

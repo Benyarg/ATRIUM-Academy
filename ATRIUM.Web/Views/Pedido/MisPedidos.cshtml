@@ -1,0 +1,35 @@
+@model IEnumerable<ATRIUM.Domain.Models.Pedido>
+@{ ViewData["Title"] = "Mis pedidos"; }
+<section class="student-intro">
+    <div class="v-container">
+        <div class="page-head"><div><span class="eyebrow">Cuenta</span><h1>Mis pedidos</h1><p class="lead-v">Consulta el estado de tus compras y validaciones de acceso.</p></div><a class="v-btn" asp-controller="Tienda" asp-action="CursosDisponibles">Explorar cursos</a></div>
+    </div>
+</section>
+<section class="v-section v-section-compact">
+    <div class="v-container">
+        @if (!Model.Any())
+        {
+            <div class="v-empty"><span class="eyebrow">Sin pedidos</span><h2>Aún no has realizado compras.</h2><p>Cuando crees un pedido podrás seguir su estado desde aquí.</p></div>
+        }
+        else
+        {
+            <div class="v-table-wrap">
+                <table class="v-table">
+                    <thead><tr><th>Pedido</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Detalle</th></tr></thead>
+                    <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td><strong>#@p.IdPedido</strong></td>
+                            <td>@p.FechaPedido.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                            <td>S/ @p.TotalPedido.ToString("0.00")</td>
+                            <td><span class="v-badge @(p.EstadoPedido == "Aprobado" ? "is-success" : p.EstadoPedido == "Rechazado" ? "is-danger" : "is-warning")">@p.EstadoPedido</span></td>
+                            <td><a class="v-btn v-btn-sm" asp-action="Details" asp-route-id="@p.IdPedido">Ver detalle</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>

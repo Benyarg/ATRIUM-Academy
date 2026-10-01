@@ -1,0 +1,42 @@
+@model ATRIUM.Web.ViewModels.PedidoViewModel
+@{ ViewData["Title"] = "Finalizar pedido"; }
+
+<section class="student-intro">
+    <div class="v-container">
+        <div class="page-head">
+            <div><span class="eyebrow">Checkout</span><h1>Finalizar pedido</h1><p class="lead-v">@Model.NombreCurso · S/ @Model.TotalPedido.ToString("0.00")</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="v-section v-section-compact">
+    <div class="v-container detail-grid">
+        <div class="surface-panel">
+            <form asp-action="GuardarPedido" method="post">
+                <input asp-for="IdCurso" type="hidden" />
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="v-form-grid">
+                    <div class="v-field v-form-full"><label class="v-label">Estudiante</label><input class="v-input" value="@Model.NombreUsuario · @Model.Email" disabled /></div>
+                    <div class="v-field v-form-full"><label class="v-label" asp-for="Direccion">Dirección</label><input class="v-input" asp-for="Direccion" /><span asp-validation-for="Direccion"></span></div>
+                    <div class="v-field"><label class="v-label" asp-for="Provincia">Provincia</label><input class="v-input" asp-for="Provincia" /><span asp-validation-for="Provincia"></span></div>
+                    <div class="v-field"><label class="v-label" asp-for="Localidad">Localidad</label><input class="v-input" asp-for="Localidad" /><span asp-validation-for="Localidad"></span></div>
+                    <div class="v-field"><label class="v-label" asp-for="CodigoPostal">Código postal</label><input class="v-input" asp-for="CodigoPostal" /></div>
+                    <div class="v-field"><label class="v-label" asp-for="Telefono">Teléfono</label><input class="v-input" asp-for="Telefono" /><span asp-validation-for="Telefono"></span></div>
+                    <div class="v-field v-form-full"><label class="v-label" asp-for="FormaPago">Método de pago</label><select class="v-select" asp-for="FormaPago"><option value="@PaymentMethods.Yape">@PaymentMethods.Yape</option><option value="@PaymentMethods.BankTransfer">Transferencia bancaria</option></select></div>
+                </div>
+                <button class="v-btn v-btn-primary v-btn-lg" type="submit">Crear pedido por S/ @Model.TotalPedido.ToString("0.00") ↗</button>
+            </form>
+        </div>
+        <aside class="surface-panel checkout-note">
+            <span class="eyebrow">Cómo funciona</span>
+            <h2>El acceso se habilita tras validar el pago.</h2>
+            <p class="text-muted-v">Tu pedido quedará en estado pendiente. ATRIUM lo revisará y, una vez aprobado, el curso aparecerá en “Mis cursos”.</p>
+            <div class="data-pair"><span>Curso</span><strong>@Model.NombreCurso</strong></div>
+            <div class="data-pair"><span>Total</span><strong>S/ @Model.TotalPedido.ToString("0.00")</strong></div>
+        </aside>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,15 @@
+@model ATRIUM.Domain.Models.ModuloCurso
+@{ ViewData["Title"]="Eliminar módulo"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Confirmación</span>
+        <h1>Eliminar @Model.Titulo</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <p class="text-muted-v">El módulo debe estar vacío antes de eliminarlo.</p>
+    <form asp-action="Delete" asp-route-id="@Model.IdModulo" method="post">
+        <button class="v-btn v-btn-danger" type="submit" data-confirm="¿Eliminar este módulo?">Eliminar</button>
+        <a class="v-btn" asp-action="Index">Cancelar</a>
+    </form>
+</div>

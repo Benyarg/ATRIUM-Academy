@@ -1,0 +1,19 @@
+@model ATRIUM.Domain.Models.Pedido
+@{ ViewData["Title"] = "Pedido registrado"; }
+<section class="v-section">
+    <div class="v-container">
+        <div class="v-empty">
+            <span class="eyebrow">Pedido #@Model.IdPedido</span>
+            <h1>Tu pedido fue registrado.</h1>
+            <p>Estado actual: <span class="v-badge is-warning">@Model.EstadoPedido</span></p>
+            <p class="text-muted-v">Monto: S/ @Model.TotalPedido.ToString("0.00") · Método: @Model.FormaPago. Guarda este número mientras ATRIUM valida el pago.</p>
+            <div class="v-actions">
+                @if (Model.FormaPago == "Yape")
+                {
+                    <a class="v-btn v-btn-primary" asp-action="PagoYape" asp-route-id="@Model.IdPedido">Ver datos de Yape ↗</a>
+                }
+                <a class="v-btn" asp-controller="Pedido" asp-action="MisPedidos">Ver mis pedidos</a>
+            </div>
+        </div>
+    </div>
+</section>

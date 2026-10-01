@@ -1,0 +1,27 @@
+@model ATRIUM.Domain.Models.Certificado
+@{ ViewData["Title"]="Editar certificado"; Layout="_AdminLayout"; }
+<div class="page-head">
+    <div>
+        <span class="eyebrow">Certificado</span>
+        <h1>Editar</h1>
+    </div>
+</div>
+<div class="surface-panel">
+    <form asp-action="Edit" asp-route-id="@Model.IdCertificado" method="post">
+        <input asp-for="IdCertificado" type="hidden"/>
+        <div class="v-field">
+            <label class="v-label" asp-for="CodigoUnico">
+            </label>
+            <input class="v-input" asp-for="CodigoUnico"/>
+        </div>
+        <div class="v-field">
+            <label class="v-label" asp-for="RutaArchivo">
+            </label>
+            <input class="v-input" asp-for="RutaArchivo"/>
+        </div>
+        <input asp-for="IdCurso" type="hidden"/>
+        <input asp-for="IdUsuario" type="hidden"/>
+        <input asp-for="FechaEmision" type="hidden"/>
+        <button class="v-btn v-btn-primary" type="submit">Guardar</button>
+    </form>
+</div>
