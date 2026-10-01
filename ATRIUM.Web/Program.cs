@@ -23,7 +23,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("No se encontró ConnectionStrings:DefaultConnection.");
 
 builder.Services.AddDbContext<AtriumDbContext>(options =>
-    options.UseSqlServer(connectionString, sql => sql.EnableRetryOnFailure(3)));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IImageStorageService, LocalImageStorageService>();
 builder.Services.AddScoped<ICourseAccessService, CourseAccessService>();

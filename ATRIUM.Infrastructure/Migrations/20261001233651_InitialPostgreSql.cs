@@ -1,12 +1,13 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace ATRIUM.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialPostgreSql : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,10 +16,10 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,26 +30,26 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Apellido = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FechaDeNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Apellido = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Direccion = table.Column<string>(type: "character varying(220)", maxLength: 220, nullable: false),
+                    Telefono = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    FechaDeNacimiento = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,13 +60,13 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "Carouseles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Titulo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    ImagenUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Activo = table.Column<bool>(type: "bit", nullable: false),
-                    Orden = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Titulo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ImagenUrl = table.Column<string>(type: "text", nullable: false),
+                    Activo = table.Column<bool>(type: "boolean", nullable: false),
+                    Orden = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,11 +77,11 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "Categorias",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    Estado = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,11 +92,11 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,11 +113,11 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -133,10 +134,10 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,8 +154,8 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -177,10 +178,10 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,21 +195,50 @@ namespace ATRIUM.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ConsultasContacto",
+                columns: table => new
+                {
+                    IdConsulta = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UsuarioId = table.Column<string>(type: "character varying(450)", maxLength: 450, nullable: true),
+                    Nombre = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    TipoConsulta = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    NumeroPedido = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Asunto = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Mensaje = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Estado = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CorreoNotificacionEnviado = table.Column<bool>(type: "boolean", nullable: false),
+                    FechaCorreoEnviado = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConsultasContacto", x => x.IdConsulta);
+                    table.ForeignKey(
+                        name: "FK_ConsultasContacto_AspNetUsers_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pedidos",
                 columns: table => new
                 {
-                    IdPedido = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaPedido = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FormaPago = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EstadoPedido = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalPedido = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CodigoPostal = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Provincia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Localidad = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    IdPedido = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FechaPedido = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    FormaPago = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    EstadoPedido = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    TotalPedido = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    Direccion = table.Column<string>(type: "character varying(220)", maxLength: 220, nullable: false),
+                    CodigoPostal = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Provincia = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Localidad = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Telefono = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,15 +255,15 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "Cursos",
                 columns: table => new
                 {
-                    IdCurso = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Precio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PrecioDescuento = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    URLImagen = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DocenteAsignado = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdCategoria = table.Column<int>(type: "int", nullable: false)
+                    IdCurso = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nombre = table.Column<string>(type: "character varying(160)", maxLength: 160, nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(1200)", maxLength: 1200, nullable: true),
+                    Precio = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    PrecioDescuento = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    URLImagen = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    DocenteAsignado = table.Column<string>(type: "character varying(160)", maxLength: 160, nullable: true),
+                    IdCategoria = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,11 +280,11 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "CarritoCompras",
                 columns: table => new
                 {
-                    IdCarroCompras = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Cantidad = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdCurso = table.Column<int>(type: "int", nullable: false)
+                    IdCarroCompras = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cantidad = table.Column<int>(type: "integer", nullable: false),
+                    UsuarioId = table.Column<string>(type: "text", nullable: false),
+                    IdCurso = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -277,28 +307,26 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "Certificados",
                 columns: table => new
                 {
-                    IdCertificado = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FechaEmision = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RutaArchivo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CodigoUnico = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    IdCurso = table.Column<int>(type: "int", nullable: false),
-                    CursoIdCurso = table.Column<int>(type: "int", nullable: true),
-                    IdUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UsuarioId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    IdCertificado = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FechaEmision = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    RutaArchivo = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    CodigoUnico = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    IdCurso = table.Column<int>(type: "integer", nullable: false),
+                    IdUsuario = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Certificados", x => x.IdCertificado);
                     table.ForeignKey(
-                        name: "FK_Certificados_AspNetUsers_UsuarioId",
-                        column: x => x.UsuarioId,
+                        name: "FK_Certificados_AspNetUsers_IdUsuario",
+                        column: x => x.IdUsuario,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Certificados_Cursos_CursoIdCurso",
-                        column: x => x.CursoIdCurso,
+                        name: "FK_Certificados_Cursos_IdCurso",
+                        column: x => x.IdCurso,
                         principalTable: "Cursos",
                         principalColumn: "IdCurso",
                         onDelete: ReferentialAction.Restrict);
@@ -308,14 +336,14 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "ContenidosEducativos",
                 columns: table => new
                 {
-                    ContenidoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Titulo = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    UrlContenido = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    CursoId = table.Column<int>(type: "int", nullable: false),
-                    FechaPublicacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EsActivo = table.Column<bool>(type: "bit", nullable: false)
+                    ContenidoId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Titulo = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    UrlContenido = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    CursoId = table.Column<int>(type: "integer", nullable: false),
+                    FechaPublicacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EsActivo = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -332,12 +360,12 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "ModulosCurso",
                 columns: table => new
                 {
-                    IdModulo = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Orden = table.Column<int>(type: "int", nullable: false),
-                    IdCurso = table.Column<int>(type: "int", nullable: false)
+                    IdModulo = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Titulo = table.Column<string>(type: "character varying(160)", maxLength: 160, nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(600)", maxLength: 600, nullable: true),
+                    Orden = table.Column<int>(type: "integer", nullable: false),
+                    IdCurso = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -354,12 +382,12 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "PedidoDetalles",
                 columns: table => new
                 {
-                    IdDetallePedido = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Cantidad = table.Column<int>(type: "int", nullable: false),
-                    PrecioIndividual = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    IdPedido = table.Column<int>(type: "int", nullable: false),
-                    IdCurso = table.Column<int>(type: "int", nullable: false)
+                    IdDetallePedido = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cantidad = table.Column<int>(type: "integer", nullable: false),
+                    PrecioIndividual = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    IdPedido = table.Column<int>(type: "integer", nullable: false),
+                    IdCurso = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -382,13 +410,13 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "ContenidosModulo",
                 columns: table => new
                 {
-                    IdContenido = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Tipo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    URLContenido = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Orden = table.Column<int>(type: "int", nullable: false),
-                    IdModulo = table.Column<int>(type: "int", nullable: false)
+                    IdContenido = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Titulo = table.Column<string>(type: "character varying(160)", maxLength: 160, nullable: false),
+                    Tipo = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
+                    URLContenido = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Orden = table.Column<int>(type: "integer", nullable: false),
+                    IdModulo = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -405,12 +433,12 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "ProgresosEstudiante",
                 columns: table => new
                 {
-                    IdProgreso = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdUsuario = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdContenido = table.Column<int>(type: "int", nullable: false),
-                    Completado = table.Column<bool>(type: "bit", nullable: false),
-                    FechaCompletado = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    IdProgreso = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IdUsuario = table.Column<string>(type: "text", nullable: false),
+                    IdContenido = table.Column<int>(type: "integer", nullable: false),
+                    Completado = table.Column<bool>(type: "boolean", nullable: false),
+                    FechaCompletado = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -438,8 +466,7 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -465,8 +492,7 @@ namespace ATRIUM.Infrastructure.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CarritoCompras_IdCurso",
@@ -474,18 +500,42 @@ namespace ATRIUM.Infrastructure.Migrations
                 column: "IdCurso");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CarritoCompras_UsuarioId",
+                name: "IX_CarritoCompras_UsuarioId_IdCurso",
                 table: "CarritoCompras",
-                column: "UsuarioId");
+                columns: new[] { "UsuarioId", "IdCurso" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Certificados_CursoIdCurso",
-                table: "Certificados",
-                column: "CursoIdCurso");
+                name: "IX_Categorias_Nombre",
+                table: "Categorias",
+                column: "Nombre",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Certificados_UsuarioId",
+                name: "IX_Certificados_CodigoUnico",
                 table: "Certificados",
+                column: "CodigoUnico",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificados_IdCurso",
+                table: "Certificados",
+                column: "IdCurso");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Certificados_IdUsuario_IdCurso",
+                table: "Certificados",
+                columns: new[] { "IdUsuario", "IdCurso" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsultasContacto_Estado_FechaCreacion",
+                table: "ConsultasContacto",
+                columns: new[] { "Estado", "FechaCreacion" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsultasContacto_UsuarioId",
+                table: "ConsultasContacto",
                 column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
@@ -529,9 +579,10 @@ namespace ATRIUM.Infrastructure.Migrations
                 column: "IdContenido");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProgresosEstudiante_IdUsuario",
+                name: "IX_ProgresosEstudiante_IdUsuario_IdContenido",
                 table: "ProgresosEstudiante",
-                column: "IdUsuario");
+                columns: new[] { "IdUsuario", "IdContenido" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -560,6 +611,9 @@ namespace ATRIUM.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Certificados");
+
+            migrationBuilder.DropTable(
+                name: "ConsultasContacto");
 
             migrationBuilder.DropTable(
                 name: "ContenidosEducativos");

@@ -33,6 +33,9 @@ public class AtriumDbContext : IdentityDbContext<Usuario, IdentityRole, string>
         ConfigureIndexes(builder);
         ConfigureRelationships(builder);
         ConfigureIdentityDeleteBehavior(builder);
+        builder.Entity<Usuario>()
+    .Property(user => user.FechaDeNacimiento)
+    .HasColumnType("date");
     }
 
     private static void ConfigurePrecision(ModelBuilder builder)
