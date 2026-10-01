@@ -1,0 +1,14 @@
+.git
+.github
+.vs
+
+**/bin
+**/obj
+
+ATRIUM.Tests/TestResults
+
+*.user
+*.suo
+
+README*
+docs/

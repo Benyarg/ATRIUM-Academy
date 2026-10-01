@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
+WORKDIR /src
+
+COPY ["ATRIUM.Web/ATRIUM.Web.csproj", "ATRIUM.Web/"]
+COPY ["ATRIUM.Domain/ATRIUM.Domain.csproj", "ATRIUM.Domain/"]
+COPY ["ATRIUM.Infrastructure/ATRIUM.Infrastructure.csproj", "ATRIUM.Infrastructure/"]
+
+RUN dotnet restore "ATRIUM.Web/ATRIUM.Web.csproj"
+
+COPY . .
+
+RUN dotnet publish "ATRIUM.Web/ATRIUM.Web.csproj" \
+-c Release \
+-o /app/publish \
+--no-restore
+
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+
+WORKDIR /app
+
+COPY --from=build /app/publish .
+
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+CMD ["sh", "-c", "ASPNETCORE_URLS=http://0.0.0.0:${PORT:-8080} exec dotnet ATRIUM.Web.dll"]
