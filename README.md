@@ -4,7 +4,7 @@
 
 ATRIUM Academy es una plataforma web de formación orientada al aprendizaje de arquitectura, representación y herramientas digitales.
 
-El sistema permite gestionar cursos, contenidos, pedidos, progreso académico, recursos y certificados desde una arquitectura organizada en capas, con autenticación mediante ASP.NET Core Identity y un panel administrativo independiente.
+El sistema permite gestionar cursos, contenidos, pedidos, progreso académico, recursos, certificados y comunicación con usuarios desde una solución ASP.NET Core organizada en capas. Incluye autenticación con ASP.NET Core Identity, panel administrativo, persistencia en PostgreSQL y almacenamiento de imágenes en Neon Object Storage.
 
 ---
 
@@ -12,15 +12,15 @@ El sistema permite gestionar cursos, contenidos, pedidos, progreso académico, r
 
 - ✅ Compilación sin errores.
 - ✅ 83/83 pruebas automatizadas correctas.
-- ✅ SQL Server + Entity Framework Core.
-- ✅ ASP.NET Core Identity.
-- ✅ Roles de estudiante y administrador.
+- ✅ ASP.NET Core MVC sobre .NET 9.
+- ✅ PostgreSQL en Neon + Entity Framework Core.
+- ✅ ASP.NET Core Identity con roles de estudiante y administrador.
 - ✅ Panel administrativo.
-- ✅ Seguimiento de progreso.
-- ✅ Certificados.
-- ✅ Módulo de contacto con SQL Server + Gmail SMTP.
-- ✅ Diseño responsive.
-- ⏳ Despliegue en Microsoft Azure.
+- ✅ Seguimiento de progreso y certificados.
+- ✅ Módulo de contacto con persistencia en PostgreSQL + Gmail SMTP.
+- ✅ Almacenamiento persistente de imágenes con Neon Object Storage.
+- ✅ Despliegue en Vercel mediante contenedor Docker.
+- ✅ Diseño responsive para escritorio, tablet y móvil.
 
 ---
 
@@ -59,20 +59,42 @@ El sistema permite gestionar cursos, contenidos, pedidos, progreso académico, r
 - Gestión de recursos.
 - Gestión de pedidos.
 - Gestión de certificados.
-- Administración de contenido de portada.
+- Administración del carousel y contenido de portada.
+
+---
+
+## Arquitectura de despliegue
+
+```text
+GitHub
+   ↓
+Vercel
+   ↓
+ASP.NET Core .NET 9
+   ↓
+├── Neon PostgreSQL
+│     └── Datos de la aplicación
+│
+├── Neon Object Storage
+│     ├── cursos/
+│     └── carousel/
+│
+└── Gmail SMTP
+      └── Notificaciones de contacto
+```
+
+La aplicación se publica en Vercel utilizando `Dockerfile.vercel` y `vercel.json`. PostgreSQL y Object Storage se alojan en Neon, mientras que las credenciales se proporcionan mediante variables de entorno y nunca se almacenan en el repositorio.
 
 ---
 
 ## Módulo de contacto
-
-ATRIUM incluye un módulo de soporte funcional.
 
 ```text
 Formulario
     ↓
 Validación server-side
     ↓
-SQL Server
+PostgreSQL / Neon
     ↓
 Consulta almacenada
     ↓
@@ -81,42 +103,65 @@ Gmail SMTP
 Notificación al correo de ATRIUM
 ```
 
-La consulta se almacena primero en SQL Server.
+La consulta se persiste primero en PostgreSQL. Si el envío de correo falla temporalmente, la información continúa registrada en la base de datos.
 
-Si Gmail falla temporalmente, la información permanece registrada en la base de datos y no se pierde.
+---
+
+## Almacenamiento de imágenes
+
+Las imágenes nuevas de cursos y carousel se almacenan de forma persistente en Neon Object Storage mediante su API compatible con S3.
+
+```text
+Administrador
+    ↓
+Validación de archivo
+    ↓
+NeonImageStorageService
+    ↓
+Neon Object Storage
+    ↓
+URL persistente almacenada en PostgreSQL
+```
+
+Características:
+
+- JPG, JPEG, PNG y WEBP.
+- Tamaño máximo de 5 MB.
+- Validación de extensión, MIME y firma binaria.
+- Nombres de archivo únicos mediante GUID.
+- Separación lógica entre `cursos/` y `carousel/`.
+- Eliminación asíncrona del archivo cuando corresponde.
+- `LocalImageStorageService` se conserva como implementación local y para pruebas.
 
 ---
 
 ## Tecnologías
 
-```text
-ASP.NET Core MVC
-.NET 9
-C#
-Entity Framework Core 9
-SQL Server
-ASP.NET Core Identity
-MailKit
-Gmail SMTP
-MSTest
-Razor Views
-HTML5
-CSS3
-JavaScript
-```
+| Área | Tecnología |
+| --- | --- |
+| Backend | ASP.NET Core MVC, .NET 9, C# |
+| Frontend | Razor Views, HTML5, CSS3, JavaScript |
+| Persistencia | Entity Framework Core 9 |
+| Base de datos | PostgreSQL / Neon |
+| Autenticación | ASP.NET Core Identity |
+| Object Storage | Neon Object Storage, AWS SDK for .NET (S3) |
+| Correo | MailKit + Gmail SMTP |
+| Pruebas | MSTest |
+| Contenedores | Docker |
+| Despliegue | Vercel |
+| Control de versiones | Git + GitHub |
 
 ---
 
-## Arquitectura
-
-La solución está organizada en cuatro proyectos principales:
+## Arquitectura de la solución
 
 ```text
 ATRIUM-Academy/
 │
 ├── ATRIUM.Domain/
 │   ├── Models/
-│   └── Constants/
+│   ├── Constants/
+│   └── Validation/
 │
 ├── ATRIUM.Infrastructure/
 │   ├── Context/
@@ -131,9 +176,10 @@ ATRIUM-Academy/
 │   └── wwwroot/
 │
 ├── ATRIUM.Tests/
-│
 ├── database/
 ├── docs/
+├── Dockerfile.vercel
+├── vercel.json
 ├── ATRIUM.Academy.sln
 ├── .gitignore
 └── README.md
@@ -141,19 +187,26 @@ ATRIUM-Academy/
 
 ### ATRIUM.Domain
 
-Contiene las entidades, constantes y reglas pertenecientes al dominio.
+Contiene entidades, constantes y validaciones propias del dominio.
 
 ### ATRIUM.Infrastructure
 
-Gestiona la persistencia mediante Entity Framework Core, SQL Server, Identity, migraciones y SeedData.
+Gestiona la persistencia con Entity Framework Core, PostgreSQL, Identity, migraciones y SeedData.
 
 ### ATRIUM.Web
 
-Contiene la aplicación ASP.NET Core MVC, controladores, servicios, ViewModels, Razor Views, CSS y JavaScript.
+Contiene la aplicación MVC, controladores, servicios, ViewModels, Razor Views, recursos estáticos e integraciones externas.
+
+Entre los servicios principales se encuentran:
+
+- `CourseAccessService`.
+- `GmailContactEmailService`.
+- `LocalImageStorageService`.
+- `NeonImageStorageService`.
 
 ### ATRIUM.Tests
 
-Contiene la suite automatizada de pruebas mediante MSTest.
+Contiene la suite automatizada basada en MSTest.
 
 ---
 
@@ -163,16 +216,19 @@ El proyecto incorpora:
 
 - ASP.NET Core Identity.
 - Autorización basada en roles.
+- Política global de autenticación con excepciones explícitas mediante `AllowAnonymous`.
 - Validación de ownership sobre recursos privados.
-- Protección CSRF mediante AntiForgeryToken.
+- Protección CSRF mediante `AntiForgeryToken`.
 - Validaciones server-side.
 - Protección contra overposting.
-- Validación de imágenes.
+- Validación de imágenes por extensión, MIME, tamaño y firma binaria.
 - Validación de URLs HTTP/HTTPS.
 - Restricciones e índices a nivel de base de datos.
-- Invalidación de sesiones cuando corresponde.
+- Lockout por intentos fallidos de autenticación.
 - Protección del último administrador.
-- User Secrets para información sensible.
+- User Secrets para desarrollo local.
+- Variables de entorno para producción.
+- Secret scanning y protecciones del repositorio en GitHub.
 
 Las credenciales privadas no se almacenan dentro del repositorio.
 
@@ -184,15 +240,15 @@ Las credenciales privadas no se almacenan dentro del repositorio.
 
 ```text
 .NET SDK 9
-Visual Studio
-SQL Server
-Entity Framework Core 9
+Visual Studio 2022 o compatible
+PostgreSQL / Neon
+Cuenta Neon con Object Storage
 ```
 
-Clonar:
+Clonar el repositorio:
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/Benyarg/ATRIUM-Academy.git
 cd ATRIUM-Academy
 ```
 
@@ -212,23 +268,21 @@ dotnet build
 
 ## User Secrets
 
-Las credenciales deben mantenerse fuera del repositorio.
+Las credenciales de desarrollo deben mantenerse fuera del repositorio.
 
 Ejemplo de estructura:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "TU_CONEXION_SQL_SERVER"
+    "DefaultConnection": "TU_CONEXION_POSTGRESQL"
   },
-
   "AdminSeed": {
     "Email": "TU_ADMIN",
     "Password": "TU_PASSWORD",
     "Nombre": "Administrador",
     "Apellido": "ATRIUM"
   },
-
   "Email": {
     "Host": "smtp.gmail.com",
     "Port": 587,
@@ -237,6 +291,13 @@ Ejemplo de estructura:
     "Username": "TU_CORREO@gmail.com",
     "AppPassword": "TU_APP_PASSWORD",
     "RecipientEmail": "TU_CORREO@gmail.com"
+  },
+  "ObjectStorage": {
+    "ServiceUrl": "TU_ENDPOINT_S3",
+    "AccessKey": "TU_ACCESS_KEY",
+    "SecretKey": "TU_SECRET_KEY",
+    "Region": "TU_REGION",
+    "BucketName": "atrium-assets"
   }
 }
 ```
@@ -247,15 +308,47 @@ Nunca publicar valores reales dentro de:
 appsettings.json
 appsettings.Development.json
 README.md
+.env.local
 ```
+
+---
+
+## Variables de entorno en Vercel
+
+ASP.NET Core traduce `__` a `:` en las variables de entorno.
+
+```text
+ConnectionStrings__DefaultConnection
+
+Email__Host
+Email__Port
+Email__SenderEmail
+Email__SenderName
+Email__Username
+Email__AppPassword
+Email__RecipientEmail
+
+AdminSeed__Email
+AdminSeed__Password
+AdminSeed__Nombre
+AdminSeed__Apellido
+
+ObjectStorage__ServiceUrl
+ObjectStorage__AccessKey
+ObjectStorage__SecretKey
+ObjectStorage__Region
+ObjectStorage__BucketName
+```
+
+Los valores sensibles deben configurarse únicamente desde el entorno de despliegue.
 
 ---
 
 ## Base de datos
 
-ATRIUM utiliza SQL Server mediante Entity Framework Core.
+ATRIUM utiliza PostgreSQL alojado en Neon mediante `Npgsql.EntityFrameworkCore.PostgreSQL`.
 
-Aplicar migraciones desde Visual Studio:
+Aplicar migraciones desde Visual Studio Package Manager Console:
 
 ```powershell
 Update-Database -Project ATRIUM.Infrastructure -StartupProject ATRIUM.Web -Context AtriumDbContext
@@ -270,12 +363,11 @@ dotnet ef database update \
   --context AtriumDbContext
 ```
 
-Migraciones principales:
+Migraciones PostgreSQL actuales:
 
 ```text
-20260915045435_InitialCreate
-20260916064111_AtriumTechnicalRefactor
-20261001185352_AddContactSupportModule
+20261001233651_InitialPostgreSql
+20261001234200_FixUsuarioFechaNacimientoPostgreSql
 ```
 
 ---
@@ -310,25 +402,54 @@ Las pruebas cubren:
 - ViewModels.
 - Validaciones.
 - Entidades.
-- Entity Framework Core.
+- Modelo de Entity Framework Core.
 - Servicios.
 - Controladores.
 - Seguridad declarativa.
 - Acceso a cursos.
-- Almacenamiento de imágenes.
+- Validación y almacenamiento local de imágenes.
+
+---
+
+## Despliegue
+
+El despliegue de producción utiliza Vercel con un contenedor ASP.NET Core.
+
+Archivos principales:
+
+```text
+Dockerfile.vercel
+vercel.json
+```
+
+El contenedor publica `ATRIUM.Web` en modo `Release` y expone la aplicación utilizando el puerto proporcionado por Vercel.
+
+Flujo:
+
+```text
+git push origin main
+        ↓
+GitHub
+        ↓
+Vercel deployment
+        ↓
+ASP.NET Core container
+        ↓
+Neon PostgreSQL + Neon Object Storage
+```
 
 ---
 
 ## Rendimiento
 
-Durante el desarrollo se realizaron mejoras orientadas a:
+Durante el desarrollo se aplicaron mejoras orientadas a:
 
 - Eliminación de consultas N+1.
 - Uso de `AsNoTracking`.
 - Proyecciones específicas.
 - Uso de `Any()` / `EXISTS`.
 - Agregaciones SQL.
-- Reducción de `Include`.
+- Reducción de `Include` innecesarios.
 - Menos viajes a base de datos.
 - Response Compression.
 - Optimización de imágenes WebP.
@@ -344,7 +465,7 @@ ATRIUM Academy
 Arquitectura · Diseño · Formación
 ```
 
-Estilo:
+Estilo visual:
 
 ```text
 Minimalista
@@ -364,14 +485,14 @@ La interfaz está adaptada para escritorio, tablet y dispositivos móviles.
 
 ---
 
-## Próximos pasos
+## Mejoras futuras
 
-- Despliegue en Microsoft Azure.
-- Panel administrativo de consultas.
-- Reintento de correos fallidos.
-- Observabilidad.
-- CI/CD.
-- Ampliación de pruebas.
+- Panel administrativo de consultas de contacto.
+- Reintento automático de correos fallidos.
+- Persistencia externa de Data Protection Keys para escenarios multi-instancia.
+- Observabilidad y métricas.
+- CI/CD con validaciones automatizadas adicionales.
+- Ampliación de cobertura de pruebas para Neon Object Storage.
 - Mejoras continuas de accesibilidad y UX.
 
 ---
