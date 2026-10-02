@@ -2,16 +2,20 @@ using ATRIUM.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 
 namespace ATRIUM.Infrastructure.Context;
 
-public class AtriumDbContext : IdentityDbContext<Usuario, IdentityRole, string>
+public class AtriumDbContext
+    : IdentityDbContext<Usuario, IdentityRole, string>,
+      IDataProtectionKeyContext
 {
-    public AtriumDbContext(DbContextOptions<AtriumDbContext> options)
+    public AtriumDbContext(
+        DbContextOptions<AtriumDbContext> options)
         : base(options)
     {
     }
-
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
     public DbSet<Categoria> Categorias => Set<Categoria>();
     public DbSet<Curso> Cursos => Set<Curso>();
     public DbSet<ModuloCurso> ModulosCurso => Set<ModuloCurso>();

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,11 @@ var connectionString =
 
 builder.Services.AddDbContext<AtriumDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+builder.Services
+    .AddDataProtection()
+    .PersistKeysToDbContext<AtriumDbContext>()
+    .SetApplicationName("ATRIUM-Academy");
 
 //
 // OBJECT STORAGE - NEON
