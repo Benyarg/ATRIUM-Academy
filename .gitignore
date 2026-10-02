@@ -19,3 +19,6 @@ coverage/
 # OS
 .DS_Store
 Thumbs.db
+.neon
+.env.local
+node_modules/

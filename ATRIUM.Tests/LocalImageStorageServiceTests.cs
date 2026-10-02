@@ -1,4 +1,4 @@
-using ATRIUM.Tests.TestSupport;
+﻿using ATRIUM.Tests.TestSupport;
 using ATRIUM.Web.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -13,16 +13,28 @@ public class LocalImageStorageServiceTests
     [TestInitialize]
     public void Setup()
     {
-        _root = Path.Combine(Path.GetTempPath(), $"atrium-images-{Guid.NewGuid():N}");
+        _root = Path.Combine(
+            Path.GetTempPath(),
+            $"atrium-images-{Guid.NewGuid():N}");
+
         Directory.CreateDirectory(_root);
-        _service = new LocalImageStorageService(new TestWebHostEnvironment { WebRootPath = _root });
+
+        _service = new LocalImageStorageService(
+            new TestWebHostEnvironment
+            {
+                WebRootPath = _root
+            });
     }
 
     [TestCleanup]
     public void Cleanup()
     {
         if (Directory.Exists(_root))
-            Directory.Delete(_root, recursive: true);
+        {
+            Directory.Delete(
+                _root,
+                recursive: true);
+        }
     }
 
     // QA: Qué probamos: imagen requerida ausente.
@@ -30,8 +42,12 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task ValidateAsync_ArchivoRequeridoNulo_DevuelveError()
     {
-        var error = await _service.ValidateAsync(null, required: true);
-        Assert.IsFalse(string.IsNullOrWhiteSpace(error));
+        var error = await _service.ValidateAsync(
+            null,
+            required: true);
+
+        Assert.IsFalse(
+            string.IsNullOrWhiteSpace(error));
     }
 
     // QA: Qué probamos: imagen opcional ausente.
@@ -39,7 +55,11 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task ValidateAsync_ArchivoOpcionalNulo_NoDevuelveError()
     {
-        Assert.IsNull(await _service.ValidateAsync(null, required: false));
+        var error = await _service.ValidateAsync(
+            null,
+            required: false);
+
+        Assert.IsNull(error);
     }
 
     // QA: Qué probamos: archivo vacío cuando la imagen es requerida.
@@ -47,8 +67,17 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task ValidateAsync_ArchivoVacioRequerido_DevuelveError()
     {
-        var file = TestHelpers.CreateFormFile([], "foto.jpg", "image/jpeg");
-        Assert.IsFalse(string.IsNullOrWhiteSpace(await _service.ValidateAsync(file, required: true)));
+        var file = TestHelpers.CreateFormFile(
+            [],
+            "foto.jpg",
+            "image/jpeg");
+
+        var error = await _service.ValidateAsync(
+            file,
+            required: true);
+
+        Assert.IsFalse(
+            string.IsNullOrWhiteSpace(error));
     }
 
     // QA: Qué probamos: archivo que supera 5 MB por un byte.
@@ -56,9 +85,18 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task ValidateAsync_ArchivoSobreCincoMegabytes_DevuelveError()
     {
-        var file = TestHelpers.CreateFormFile(new byte[5_000_001], "foto.jpg", "image/jpeg");
-        var error = await _service.ValidateAsync(file, required: true);
-        StringAssert.Contains(error!, "5 MB");
+        var file = TestHelpers.CreateFormFile(
+            new byte[5_000_001],
+            "foto.jpg",
+            "image/jpeg");
+
+        var error = await _service.ValidateAsync(
+            file,
+            required: true);
+
+        StringAssert.Contains(
+            error!,
+            "5 MB");
     }
 
     // QA: Qué probamos: extensión no permitida.
@@ -66,9 +104,18 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task ValidateAsync_ExtensionNoPermitida_DevuelveError()
     {
-        var file = TestHelpers.CreateFormFile(TestHelpers.MinimalJpeg(), "foto.gif", "image/jpeg");
-        var error = await _service.ValidateAsync(file, required: true);
-        StringAssert.Contains(error!, "Formato no permitido");
+        var file = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalJpeg(),
+            "foto.gif",
+            "image/jpeg");
+
+        var error = await _service.ValidateAsync(
+            file,
+            required: true);
+
+        StringAssert.Contains(
+            error!,
+            "Formato no permitido");
     }
 
     // QA: Qué probamos: extensión JPG con MIME PNG.
@@ -76,9 +123,18 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task ValidateAsync_MimeNoCoincideConExtension_DevuelveError()
     {
-        var file = TestHelpers.CreateFormFile(TestHelpers.MinimalJpeg(), "foto.jpg", "image/png");
-        var error = await _service.ValidateAsync(file, required: true);
-        StringAssert.Contains(error!, "no coincide");
+        var file = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalJpeg(),
+            "foto.jpg",
+            "image/png");
+
+        var error = await _service.ValidateAsync(
+            file,
+            required: true);
+
+        StringAssert.Contains(
+            error!,
+            "no coincide");
     }
 
     // QA: Qué probamos: archivo con extensión/MIME válidos pero firma binaria falsa.
@@ -86,9 +142,18 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task ValidateAsync_FirmaBinariaInvalida_DevuelveError()
     {
-        var file = TestHelpers.CreateFormFile([1, 2, 3, 4, 5, 6, 7, 8], "foto.png", "image/png");
-        var error = await _service.ValidateAsync(file, required: true);
-        StringAssert.Contains(error!, "imagen válida");
+        var file = TestHelpers.CreateFormFile(
+            [1, 2, 3, 4, 5, 6, 7, 8],
+            "foto.png",
+            "image/png");
+
+        var error = await _service.ValidateAsync(
+            file,
+            required: true);
+
+        StringAssert.Contains(
+            error!,
+            "imagen");
     }
 
     // QA: Qué probamos: firmas mínimas válidas para JPG, PNG y WEBP.
@@ -96,9 +161,35 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task ValidateAsync_FormatosPermitidosConFirmaValida_NoDevuelvenError()
     {
-        Assert.IsNull(await _service.ValidateAsync(TestHelpers.CreateFormFile(TestHelpers.MinimalJpeg(), "a.JPG", "image/jpeg"), true));
-        Assert.IsNull(await _service.ValidateAsync(TestHelpers.CreateFormFile(TestHelpers.MinimalPng(), "b.png", "image/png"), true));
-        Assert.IsNull(await _service.ValidateAsync(TestHelpers.CreateFormFile(TestHelpers.MinimalWebp(), "c.webp", "image/webp"), true));
+        var jpegFile = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalJpeg(),
+            "a.JPG",
+            "image/jpeg");
+
+        var pngFile = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalPng(),
+            "b.png",
+            "image/png");
+
+        var webpFile = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalWebp(),
+            "c.webp",
+            "image/webp");
+
+        Assert.IsNull(
+            await _service.ValidateAsync(
+                jpegFile,
+                required: true));
+
+        Assert.IsNull(
+            await _service.ValidateAsync(
+                pngFile,
+                required: true));
+
+        Assert.IsNull(
+            await _service.ValidateAsync(
+                webpFile,
+                required: true));
     }
 
     // QA: Qué probamos: guardado físico de una imagen de curso.
@@ -106,12 +197,30 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task SaveAsync_ImagenCurso_GuardaArchivoEnRutaEsperada()
     {
-        var file = TestHelpers.CreateFormFile(TestHelpers.MinimalJpeg(), "foto.jpg", "image/jpeg");
-        var relativePath = await _service.SaveAsync(file, ImageStorageArea.Courses);
-        var physicalPath = Path.Combine(_root, relativePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+        var file = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalJpeg(),
+            "foto.jpg",
+            "image/jpeg");
 
-        Assert.IsTrue(relativePath.StartsWith("/img/cursos/", StringComparison.Ordinal));
-        Assert.IsTrue(File.Exists(physicalPath));
+        var relativePath = await _service.SaveAsync(
+            file,
+            ImageStorageArea.Courses);
+
+        var physicalPath = Path.Combine(
+            _root,
+            relativePath
+                .TrimStart('/')
+                .Replace(
+                    '/',
+                    Path.DirectorySeparatorChar));
+
+        Assert.IsTrue(
+            relativePath.StartsWith(
+                "/img/cursos/",
+                StringComparison.Ordinal));
+
+        Assert.IsTrue(
+            File.Exists(physicalPath));
     }
 
     // QA: Qué probamos: dos guardados con el mismo nombre original.
@@ -119,34 +228,78 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task SaveAsync_MismoNombreOriginal_GeneraNombresUnicos()
     {
-        var first = await _service.SaveAsync(TestHelpers.CreateFormFile(TestHelpers.MinimalPng(), "imagen.png", "image/png"), ImageStorageArea.Carousel);
-        var second = await _service.SaveAsync(TestHelpers.CreateFormFile(TestHelpers.MinimalPng(), "imagen.png", "image/png"), ImageStorageArea.Carousel);
+        var firstFile = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalPng(),
+            "imagen.png",
+            "image/png");
 
-        Assert.AreNotEqual(first, second);
+        var secondFile = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalPng(),
+            "imagen.png",
+            "image/png");
+
+        var first = await _service.SaveAsync(
+            firstFile,
+            ImageStorageArea.Carousel);
+
+        var second = await _service.SaveAsync(
+            secondFile,
+            ImageStorageArea.Carousel);
+
+        Assert.AreNotEqual(
+            first,
+            second);
     }
 
     // QA: Qué probamos: eliminación de un archivo dentro del área correcta.
     // QA: Esperado: el archivo es eliminado.
     [TestMethod]
-    public async Task Delete_RutaValida_EliminaArchivo()
+    public async Task DeleteAsync_RutaValida_EliminaArchivo()
     {
-        var path = await _service.SaveAsync(TestHelpers.CreateFormFile(TestHelpers.MinimalJpeg(), "foto.jpg", "image/jpeg"), ImageStorageArea.Courses);
-        var physicalPath = Path.Combine(_root, path.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+        var file = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalJpeg(),
+            "foto.jpg",
+            "image/jpeg");
 
-        _service.Delete(path, ImageStorageArea.Courses);
-        Assert.IsFalse(File.Exists(physicalPath));
+        var path = await _service.SaveAsync(
+            file,
+            ImageStorageArea.Courses);
+
+        var physicalPath = Path.Combine(
+            _root,
+            path
+                .TrimStart('/')
+                .Replace(
+                    '/',
+                    Path.DirectorySeparatorChar));
+
+        await _service.DeleteAsync(
+            path,
+            ImageStorageArea.Courses);
+
+        Assert.IsFalse(
+            File.Exists(physicalPath));
     }
 
     // QA: Qué probamos: intento de borrar una ruta ajena al área autorizada.
     // QA: Esperado: se ignora la solicitud y el archivo externo permanece intacto.
     [TestMethod]
-    public void Delete_RutaFueraDelArea_NoEliminaArchivo()
+    public async Task DeleteAsync_RutaFueraDelArea_NoEliminaArchivo()
     {
-        var outsideFile = Path.Combine(_root, "no-borrar.txt");
-        File.WriteAllText(outsideFile, "seguro");
+        var outsideFile = Path.Combine(
+            _root,
+            "no-borrar.txt");
 
-        _service.Delete("/no-borrar.txt", ImageStorageArea.Courses);
-        Assert.IsTrue(File.Exists(outsideFile));
+        File.WriteAllText(
+            outsideFile,
+            "seguro");
+
+        await _service.DeleteAsync(
+            "/no-borrar.txt",
+            ImageStorageArea.Courses);
+
+        Assert.IsTrue(
+            File.Exists(outsideFile));
     }
 
     // QA: Qué probamos: valor de enum no definido para área de almacenamiento.
@@ -154,8 +307,14 @@ public class LocalImageStorageServiceTests
     [TestMethod]
     public async Task SaveAsync_AreaDesconocida_LanzaArgumentOutOfRangeException()
     {
-        var file = TestHelpers.CreateFormFile(TestHelpers.MinimalJpeg(), "foto.jpg", "image/jpeg");
+        var file = TestHelpers.CreateFormFile(
+            TestHelpers.MinimalJpeg(),
+            "foto.jpg",
+            "image/jpeg");
+
         await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(
-            () => _service.SaveAsync(file, (ImageStorageArea)999));
+            () => _service.SaveAsync(
+                file,
+                (ImageStorageArea)999));
     }
 }

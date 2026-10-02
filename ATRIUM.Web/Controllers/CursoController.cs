@@ -54,15 +54,26 @@ public class CursoController : Controller
         if (course is null)
             return NotFound();
 
-        var hasAccess = User.IsInRole(AppRoles.Administrator);
-        if (!hasAccess && User.Identity?.IsAuthenticated == true)
+        var hasAccess =
+            User.IsInRole(AppRoles.Administrator);
+
+        if (!hasAccess &&
+            User.Identity?.IsAuthenticated == true)
         {
             var userId = _userManager.GetUserId(User);
+
             if (!string.IsNullOrWhiteSpace(userId))
-                hasAccess = await _courseAccess.HasApprovedAccessAsync(userId, course.IdCurso);
+            {
+                hasAccess =
+                    await _courseAccess
+                        .HasApprovedAccessAsync(
+                            userId,
+                            course.IdCurso);
+            }
         }
 
         ViewBag.TieneAcceso = hasAccess;
+
         return View(course);
     }
 
@@ -70,44 +81,62 @@ public class CursoController : Controller
     public async Task<IActionResult> Create()
     {
         await LoadCategoriesAsync();
+
         return View(new CursoViewModel());
     }
 
-    [Authorize(Roles = AppRoles.Administrator), HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CursoViewModel model)
+    [Authorize(Roles = AppRoles.Administrator)]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(
+        CursoViewModel model)
     {
-        await ValidateCategoryAsync(model.IdCategoria);
+        await ValidateCategoryAsync(
+            model.IdCategoria);
 
-        var imageError = await _imageStorage.ValidateAsync(
-            model.ImagenArchivo,
-            required: false,
-            HttpContext.RequestAborted);
+        var imageError =
+            await _imageStorage.ValidateAsync(
+                model.ImagenArchivo,
+                required: false,
+                HttpContext.RequestAborted);
 
         if (imageError is not null)
-            ModelState.AddModelError(nameof(model.ImagenArchivo), imageError);
+        {
+            ModelState.AddModelError(
+                nameof(model.ImagenArchivo),
+                imageError);
+        }
 
         if (!ModelState.IsValid)
         {
-            await LoadCategoriesAsync(model.IdCategoria);
+            await LoadCategoriesAsync(
+                model.IdCategoria);
+
             return View(model);
         }
 
-        var imagePath = model.ImagenArchivo is null
-            ? null
-            : await _imageStorage.SaveAsync(
-                model.ImagenArchivo,
-                ImageStorageArea.Courses,
-                HttpContext.RequestAborted);
+        var imagePath =
+            model.ImagenArchivo is null
+                ? null
+                : await _imageStorage.SaveAsync(
+                    model.ImagenArchivo,
+                    ImageStorageArea.Courses,
+                    HttpContext.RequestAborted);
 
         var course = new Curso
         {
             Nombre = model.Nombre.Trim(),
-            Descripcion = model.Descripcion?.Trim(),
+            Descripcion =
+                model.Descripcion?.Trim(),
             Precio = model.Precio,
-            PrecioDescuento = model.PrecioDescuento,
-            DocenteAsignado = model.DocenteAsignado?.Trim(),
-            IdCategoria = model.IdCategoria,
-            URLImagen = imagePath
+            PrecioDescuento =
+                model.PrecioDescuento,
+            DocenteAsignado =
+                model.DocenteAsignado?.Trim(),
+            IdCategoria =
+                model.IdCategoria,
+            URLImagen =
+                imagePath
         };
 
         _context.Cursos.Add(course);
@@ -118,11 +147,17 @@ public class CursoController : Controller
         }
         catch
         {
-            _imageStorage.Delete(imagePath, ImageStorageArea.Courses);
+            await _imageStorage.DeleteAsync(
+                imagePath,
+                ImageStorageArea.Courses,
+                HttpContext.RequestAborted);
+
             throw;
         }
 
-        TempData["SuccessMessage"] = "Curso creado.";
+        TempData["SuccessMessage"] =
+            "Curso creado.";
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -132,59 +167,94 @@ public class CursoController : Controller
         if (id is null)
             return NotFound();
 
-        var course = await _context.Cursos.FindAsync(id);
+        var course =
+            await _context.Cursos.FindAsync(id);
+
         if (course is null)
             return NotFound();
 
-        await LoadCategoriesAsync(course.IdCategoria);
+        await LoadCategoriesAsync(
+            course.IdCategoria);
+
         return View(ToViewModel(course));
     }
 
-    [Authorize(Roles = AppRoles.Administrator), HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, CursoViewModel model)
+    [Authorize(Roles = AppRoles.Administrator)]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(
+        int id,
+        CursoViewModel model)
     {
         if (id != model.IdCurso)
             return NotFound();
 
-        var course = await _context.Cursos.FindAsync(id);
+        var course =
+            await _context.Cursos.FindAsync(id);
+
         if (course is null)
             return NotFound();
 
-        await ValidateCategoryAsync(model.IdCategoria);
+        await ValidateCategoryAsync(
+            model.IdCategoria);
 
-        var imageError = await _imageStorage.ValidateAsync(
-            model.ImagenArchivo,
-            required: false,
-            HttpContext.RequestAborted);
+        var imageError =
+            await _imageStorage.ValidateAsync(
+                model.ImagenArchivo,
+                required: false,
+                HttpContext.RequestAborted);
 
         if (imageError is not null)
-            ModelState.AddModelError(nameof(model.ImagenArchivo), imageError);
+        {
+            ModelState.AddModelError(
+                nameof(model.ImagenArchivo),
+                imageError);
+        }
 
         if (!ModelState.IsValid)
         {
-            model.ImagenActual = course.URLImagen;
-            await LoadCategoriesAsync(model.IdCategoria);
+            model.ImagenActual =
+                course.URLImagen;
+
+            await LoadCategoriesAsync(
+                model.IdCategoria);
+
             return View(model);
         }
 
-        course.Nombre = model.Nombre.Trim();
-        course.Descripcion = model.Descripcion?.Trim();
-        course.Precio = model.Precio;
-        course.PrecioDescuento = model.PrecioDescuento;
-        course.DocenteAsignado = model.DocenteAsignado?.Trim();
-        course.IdCategoria = model.IdCategoria;
+        course.Nombre =
+            model.Nombre.Trim();
 
-        var previousImagePath = course.URLImagen;
+        course.Descripcion =
+            model.Descripcion?.Trim();
+
+        course.Precio =
+            model.Precio;
+
+        course.PrecioDescuento =
+            model.PrecioDescuento;
+
+        course.DocenteAsignado =
+            model.DocenteAsignado?.Trim();
+
+        course.IdCategoria =
+            model.IdCategoria;
+
+        var previousImagePath =
+            course.URLImagen;
+
         string? newImagePath = null;
 
         if (model.ImagenArchivo is not null)
         {
-            newImagePath = await _imageStorage.SaveAsync(
-                model.ImagenArchivo,
-                ImageStorageArea.Courses,
-                HttpContext.RequestAborted);
+            newImagePath =
+                await _imageStorage.SaveAsync(
+                    model.ImagenArchivo,
+                    ImageStorageArea.Courses,
+                    HttpContext.RequestAborted);
 
-            course.URLImagen = newImagePath;
+            course.URLImagen =
+                newImagePath;
         }
 
         try
@@ -193,14 +263,24 @@ public class CursoController : Controller
         }
         catch
         {
-            _imageStorage.Delete(newImagePath, ImageStorageArea.Courses);
+            await _imageStorage.DeleteAsync(
+                newImagePath,
+                ImageStorageArea.Courses,
+                HttpContext.RequestAborted);
+
             throw;
         }
 
         if (newImagePath is not null)
-            _imageStorage.Delete(previousImagePath, ImageStorageArea.Courses);
+        {
+            await _imageStorage.DeleteAsync(
+                previousImagePath,
+                ImageStorageArea.Courses,
+                HttpContext.RequestAborted);
+        }
 
-        TempData["SuccessMessage"] = "Curso actualizado.";
+        TempData["SuccessMessage"] =
+            "Curso actualizado.";
 
         return RedirectToAction(nameof(Index));
     }
@@ -214,113 +294,196 @@ public class CursoController : Controller
         var course = await _context.Cursos
             .AsNoTracking()
             .Include(item => item.Categoria)
-            .FirstOrDefaultAsync(item => item.IdCurso == id);
+            .FirstOrDefaultAsync(
+                item => item.IdCurso == id);
 
-        return course is null ? NotFound() : View(course);
+        return course is null
+            ? NotFound()
+            : View(course);
     }
 
-    [Authorize(Roles = AppRoles.Administrator), HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    [Authorize(Roles = AppRoles.Administrator)]
+    [HttpPost]
+    [ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(
+        int id)
     {
         var result = await _context.Cursos
-            .Where(course => course.IdCurso == id)
+            .Where(course =>
+                course.IdCurso == id)
             .Select(course => new
             {
                 Course = course,
-                HasDependencies = course.Modulos.Any()
-                                  || course.PedidoDetalles.Any()
-                                  || course.CarritoCompras.Any()
-                                  || course.ContenidosEducativos.Any()
-                                  || course.Certificados.Any()
+
+                HasDependencies =
+                    course.Modulos.Any()
+                    || course.PedidoDetalles.Any()
+                    || course.CarritoCompras.Any()
+                    || course.ContenidosEducativos.Any()
+                    || course.Certificados.Any()
             })
             .FirstOrDefaultAsync();
 
         if (result is null)
-            return RedirectToAction(nameof(Index));
+        {
+            return RedirectToAction(
+                nameof(Index));
+        }
 
         if (result.HasDependencies)
         {
-            TempData["ErrorMessage"] = "No puedes eliminar un curso que todavía tiene módulos, compras, recursos o certificados asociados.";
-            return RedirectToAction(nameof(Index));
+            TempData["ErrorMessage"] =
+                "No puedes eliminar un curso que todavía tiene módulos, compras, recursos o certificados asociados.";
+
+            return RedirectToAction(
+                nameof(Index));
         }
 
-        _context.Cursos.Remove(result.Course);
-        await _context.SaveChangesAsync();
-        _imageStorage.Delete(result.Course.URLImagen, ImageStorageArea.Courses);
+        var imagePath =
+            result.Course.URLImagen;
 
-        TempData["SuccessMessage"] = "Curso eliminado.";
+        _context.Cursos.Remove(
+            result.Course);
+
+        await _context.SaveChangesAsync();
+
+        await _imageStorage.DeleteAsync(
+            imagePath,
+            ImageStorageArea.Courses,
+            HttpContext.RequestAborted);
+
+        TempData["SuccessMessage"] =
+            "Curso eliminado.";
+
         return RedirectToAction(nameof(Index));
     }
 
-    [Authorize(Roles = AppRoles.StudentOrAdministrator)]
+    [Authorize(
+        Roles = AppRoles.StudentOrAdministrator)]
     public async Task<IActionResult> MisCursos()
     {
-        var userId = _userManager.GetUserId(User);
+        var userId =
+            _userManager.GetUserId(User);
+
         if (string.IsNullOrWhiteSpace(userId))
             return Challenge();
 
         var courses = await _context.Cursos
             .AsNoTracking()
-            .Include(course => course.Categoria)
-            .Where(course => course.PedidoDetalles.Any(detail =>
-                detail.Pedido != null
-                && detail.Pedido.UserId == userId
-                && detail.Pedido.EstadoPedido == OrderStatuses.Approved))
-            .OrderBy(course => course.Nombre)
+            .Include(course =>
+                course.Categoria)
+            .Where(course =>
+                course.PedidoDetalles.Any(
+                    detail =>
+                        detail.Pedido != null
+                        && detail.Pedido.UserId == userId
+                        && detail.Pedido.EstadoPedido ==
+                            OrderStatuses.Approved))
+            .OrderBy(course =>
+                course.Nombre)
             .ToListAsync();
 
         return View(courses);
     }
 
     [AllowAnonymous]
-    public async Task<IActionResult> Buscar(string? query)
+    public async Task<IActionResult> Buscar(
+        string? query)
     {
         var courses = _context.Cursos
             .AsNoTracking()
-            .Include(course => course.Categoria)
+            .Include(course =>
+                course.Categoria)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(query))
         {
             var term = query.Trim();
-            courses = courses.Where(course =>
-                course.Nombre.Contains(term)
-                || (course.Descripcion ?? string.Empty).Contains(term));
+
+            courses = courses.Where(
+                course =>
+                    course.Nombre.Contains(term)
+                    || (course.Descripcion
+                        ?? string.Empty)
+                        .Contains(term));
         }
 
-        return View(await courses.OrderBy(course => course.Nombre).ToListAsync());
+        return View(
+            await courses
+                .OrderBy(course =>
+                    course.Nombre)
+                .ToListAsync());
     }
 
-    private async Task LoadCategoriesAsync(int? selectedId = null)
+    private async Task LoadCategoriesAsync(
+        int? selectedId = null)
     {
-        var categories = await _context.Categorias
-            .AsNoTracking()
-            .Where(category => category.Estado)
-            .OrderBy(category => category.Nombre)
-            .Select(category => new { category.Id, category.Nombre })
-            .ToListAsync();
+        var categories =
+            await _context.Categorias
+                .AsNoTracking()
+                .Where(category =>
+                    category.Estado)
+                .OrderBy(category =>
+                    category.Nombre)
+                .Select(category =>
+                    new
+                    {
+                        category.Id,
+                        category.Nombre
+                    })
+                .ToListAsync();
 
-        ViewData["IdCategoria"] = new SelectList(categories, "Id", "Nombre", selectedId);
+        ViewData["IdCategoria"] =
+            new SelectList(
+                categories,
+                "Id",
+                "Nombre",
+                selectedId);
     }
 
-    private async Task ValidateCategoryAsync(int categoryId)
+    private async Task ValidateCategoryAsync(
+        int categoryId)
     {
-        if (categoryId <= 0
-            || !await _context.Categorias.AsNoTracking().AnyAsync(category => category.Id == categoryId && category.Estado))
+        if (categoryId <= 0 ||
+            !await _context.Categorias
+                .AsNoTracking()
+                .AnyAsync(category =>
+                    category.Id == categoryId
+                    && category.Estado))
         {
-            ModelState.AddModelError(nameof(CursoViewModel.IdCategoria), "Selecciona una categoría activa y válida.");
+            ModelState.AddModelError(
+                nameof(
+                    CursoViewModel.IdCategoria),
+                "Selecciona una categoría activa y válida.");
         }
     }
 
-    private static CursoViewModel ToViewModel(Curso course) => new()
-    {
-        IdCurso = course.IdCurso,
-        Nombre = course.Nombre,
-        Descripcion = course.Descripcion,
-        Precio = course.Precio,
-        PrecioDescuento = course.PrecioDescuento,
-        DocenteAsignado = course.DocenteAsignado,
-        IdCategoria = course.IdCategoria,
-        ImagenActual = course.URLImagen
-    };
+    private static CursoViewModel ToViewModel(
+        Curso course) => new()
+        {
+            IdCurso =
+            course.IdCurso,
+
+            Nombre =
+            course.Nombre,
+
+            Descripcion =
+            course.Descripcion,
+
+            Precio =
+            course.Precio,
+
+            PrecioDescuento =
+            course.PrecioDescuento,
+
+            DocenteAsignado =
+            course.DocenteAsignado,
+
+            IdCategoria =
+            course.IdCategoria,
+
+            ImagenActual =
+            course.URLImagen
+        };
 }

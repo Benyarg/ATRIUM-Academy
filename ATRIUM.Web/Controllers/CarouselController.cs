@@ -34,15 +34,30 @@ public class CarouselController : Controller
             .Select(item => (int?)item.Orden)
             .MaxAsync() ?? 0;
 
-        return View(new Carousel { Activo = true, Orden = currentMaxOrder + 1 });
+        return View(new Carousel
+        {
+            Activo = true,
+            Orden = currentMaxOrder + 1
+        });
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Carousel carousel, IFormFile? imagen)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(
+        Carousel carousel,
+        IFormFile? imagen)
     {
-        var imageError = await _imageStorage.ValidateAsync(imagen, required: true, HttpContext.RequestAborted);
+        var imageError = await _imageStorage.ValidateAsync(
+            imagen,
+            required: true,
+            HttpContext.RequestAborted);
+
         if (imageError is not null)
-            ModelState.AddModelError(nameof(carousel.ImagenUrl), imageError);
+        {
+            ModelState.AddModelError(
+                nameof(carousel.ImagenUrl),
+                imageError);
+        }
 
         if (!ModelState.IsValid)
             return View(carousel);
@@ -69,11 +84,16 @@ public class CarouselController : Controller
         }
         catch
         {
-            _imageStorage.Delete(imagePath, ImageStorageArea.Carousel);
+            await _imageStorage.DeleteAsync(
+                imagePath,
+                ImageStorageArea.Carousel,
+                HttpContext.RequestAborted);
+
             throw;
         }
 
         TempData["SuccessMessage"] = "Banner creado.";
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -86,7 +106,9 @@ public class CarouselController : Controller
             .AsNoTracking()
             .FirstOrDefaultAsync(carousel => carousel.Id == id);
 
-        return item is null ? NotFound() : View(item);
+        return item is null
+            ? NotFound()
+            : View(item);
     }
 
     public async Task<IActionResult> Edit(int? id)
@@ -95,27 +117,45 @@ public class CarouselController : Controller
             return NotFound();
 
         var item = await _context.Carouseles.FindAsync(id);
-        return item is null ? NotFound() : View(item);
+
+        return item is null
+            ? NotFound()
+            : View(item);
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Carousel posted, IFormFile? nuevaImagen)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(
+        int id,
+        Carousel posted,
+        IFormFile? nuevaImagen)
     {
         if (id != posted.Id)
             return NotFound();
 
         var current = await _context.Carouseles.FindAsync(id);
+
         if (current is null)
             return NotFound();
 
         ModelState.Remove(nameof(posted.ImagenUrl));
-        var imageError = await _imageStorage.ValidateAsync(nuevaImagen, required: false, HttpContext.RequestAborted);
+
+        var imageError = await _imageStorage.ValidateAsync(
+            nuevaImagen,
+            required: false,
+            HttpContext.RequestAborted);
+
         if (imageError is not null)
-            ModelState.AddModelError(nameof(posted.ImagenUrl), imageError);
+        {
+            ModelState.AddModelError(
+                nameof(posted.ImagenUrl),
+                imageError);
+        }
 
         if (!ModelState.IsValid)
         {
             posted.ImagenUrl = current.ImagenUrl;
+
             return View(posted);
         }
 
@@ -125,6 +165,7 @@ public class CarouselController : Controller
         current.Activo = posted.Activo;
 
         var previousImagePath = current.ImagenUrl;
+
         string? newImagePath = null;
 
         if (nuevaImagen is not null)
@@ -143,12 +184,21 @@ public class CarouselController : Controller
         }
         catch
         {
-            _imageStorage.Delete(newImagePath, ImageStorageArea.Carousel);
+            await _imageStorage.DeleteAsync(
+                newImagePath,
+                ImageStorageArea.Carousel,
+                HttpContext.RequestAborted);
+
             throw;
         }
 
         if (newImagePath is not null)
-            _imageStorage.Delete(previousImagePath, ImageStorageArea.Carousel);
+        {
+            await _imageStorage.DeleteAsync(
+                previousImagePath,
+                ImageStorageArea.Carousel,
+                HttpContext.RequestAborted);
+        }
 
         TempData["SuccessMessage"] = "Banner actualizado.";
 
@@ -164,21 +214,34 @@ public class CarouselController : Controller
             .AsNoTracking()
             .FirstOrDefaultAsync(carousel => carousel.Id == id);
 
-        return item is null ? NotFound() : View(item);
+        return item is null
+            ? NotFound()
+            : View(item);
     }
 
-    [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+    [HttpPost]
+    [ActionName("Delete")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var item = await _context.Carouseles.FindAsync(id);
+
         if (item is not null)
         {
+            var imagePath = item.ImagenUrl;
+
             _context.Carouseles.Remove(item);
+
             await _context.SaveChangesAsync();
-            _imageStorage.Delete(item.ImagenUrl, ImageStorageArea.Carousel);
+
+            await _imageStorage.DeleteAsync(
+                imagePath,
+                ImageStorageArea.Carousel,
+                HttpContext.RequestAborted);
         }
 
         TempData["SuccessMessage"] = "Banner eliminado.";
+
         return RedirectToAction(nameof(Index));
     }
 }

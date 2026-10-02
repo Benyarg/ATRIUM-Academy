@@ -75,28 +75,49 @@ public sealed class LocalImageStorageService : IImageStorageService
         return $"/img/{folderName}/{fileName}";
     }
 
-    public void Delete(string? relativePath, ImageStorageArea area)
+    public Task DeleteAsync(
+    string? relativePath,
+    ImageStorageArea area,
+    CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(relativePath))
-            return;
+            return Task.CompletedTask;
 
         var folderName = GetFolderName(area);
         var expectedPrefix = $"/img/{folderName}/";
-        if (!relativePath.StartsWith(expectedPrefix, StringComparison.OrdinalIgnoreCase))
-            return;
+
+        if (!relativePath.StartsWith(
+                expectedPrefix,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return Task.CompletedTask;
+        }
 
         var fileName = Path.GetFileName(relativePath);
+
         if (string.IsNullOrWhiteSpace(fileName))
-            return;
+            return Task.CompletedTask;
 
-        var folder = Path.GetFullPath(Path.Combine(_environment.WebRootPath, "img", folderName));
-        var fullPath = Path.GetFullPath(Path.Combine(folder, fileName));
+        var folder = Path.GetFullPath(
+            Path.Combine(
+                _environment.WebRootPath,
+                "img",
+                folderName));
 
-        if (!fullPath.StartsWith(folder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
-            return;
+        var fullPath = Path.GetFullPath(
+            Path.Combine(folder, fileName));
+
+        if (!fullPath.StartsWith(
+                folder + Path.DirectorySeparatorChar,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return Task.CompletedTask;
+        }
 
         if (File.Exists(fullPath))
             File.Delete(fullPath);
+
+        return Task.CompletedTask;
     }
 
     private static string GetFolderName(ImageStorageArea area) => area switch
