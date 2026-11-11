@@ -690,6 +690,8 @@ Diseño y desarrollo web enfocado en la creación de experiencias digitales mode
 
 ## 📄 Licencia
 
-El repositorio no incluye actualmente un archivo `LICENSE`.
+Este proyecto se distribuye bajo la licencia **MIT**.
 
-Antes de establecer una licencia MIT o cualquier otra licencia de distribución, deben definirse los derechos de titularidad y las condiciones de autorización correspondientes.
+La licencia se aplica al código fuente cuyos derechos corresponden al autor. Los logotipos, marcas comerciales, fotografías, contenidos educativos y demás recursos pertenecientes a ATRIUM Academy o a terceros quedan excluidos de esta concesión y conservan sus respectivos derechos de propiedad intelectual.
+
+Consulta el archivo [LICENSE](./LICENSE) para conocer los términos completos.
